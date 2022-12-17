@@ -2,7 +2,7 @@ package com.antwerkz.build.replacer
 
 import java.util.regex.Pattern
 
-class PatternFlagsFactory {
+object PatternFlagsFactory {
     fun buildFlags(flags: List<String>): Int {
         if (flags.isEmpty()) {
             return NO_FLAGS
@@ -31,7 +31,5 @@ class PatternFlagsFactory {
         throw IllegalArgumentException("Unknown regex flag: $fieldName")
     }
 
-    companion object {
-        const val NO_FLAGS = -1
-    }
+    const val NO_FLAGS = -1
 }

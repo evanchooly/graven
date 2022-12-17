@@ -1,12 +1,12 @@
 package com.antwerkz.build.replacer
 
+import java.nio.charset.Charset
 import org.apache.maven.plugin.logging.Log
 
 class SummaryBuilder {
     private var filesReplaced = 0
-    fun add(inputFile: String?, outputFile: String?, encoding: String?, log: Log) {
-        val encodingUsed = encoding ?: "(default)"
-        log.debug(String.format(FILE_DEBUG_FORMAT, inputFile, outputFile, encodingUsed))
+    fun add(inputFile: String?, outputFile: String?, encoding: Charset, log: Log) {
+        log.debug(String.format(FILE_DEBUG_FORMAT, inputFile, outputFile, encoding))
         filesReplaced++
     }
 

@@ -3,7 +3,7 @@ package com.antwerkz.build.replacer
 import com.antwerkz.build.replacer.file.FileUtils
 import java.nio.charset.Charset
 
-class ReplacementProcessor {
+object ReplacementProcessor {
     fun replace(
         replacements: List<Replacement>,
         regex: Boolean,
@@ -26,7 +26,6 @@ class ReplacementProcessor {
         replacement: Replacement
     ): String {
         require(replacement.getToken().isNotEmpty()) { "Token or token file required" }
-        val replacer = TokenReplacer()
-        return replacer.replace(content, replacement, regex, regexFlags)
+        return TokenReplacer.replace(content, replacement, regex, regexFlags)
     }
 }

@@ -2,7 +2,7 @@ package com.antwerkz.build.replacer
 
 import java.io.FileReader
 import java.nio.charset.Charset
-import org.apache.commons.lang3.StringEscapeUtils
+import org.apache.commons.text.StringEscapeUtils
 
 class Replacement {
     private var delimiter: DelimiterBuilder? = null

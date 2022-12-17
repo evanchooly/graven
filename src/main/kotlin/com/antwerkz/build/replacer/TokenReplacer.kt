@@ -2,7 +2,7 @@ package com.antwerkz.build.replacer
 
 import java.util.regex.Pattern
 
-class TokenReplacer : Replacer {
+object TokenReplacer : Replacer {
     override fun replace(
         content: String,
         replacement: Replacement,

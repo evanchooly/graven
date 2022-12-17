@@ -19,13 +19,8 @@ import org.apache.maven.plugins.annotations.Mojo
  * @phase compile
  */
 @Mojo(name = "replacer", defaultPhase = PROCESS_SOURCES, threadSafe = true)
-class ReplacerMojo : AbstractMojo {
-    private val tokenValueMapFactory: TokenValueMapFactory
-    private val fileSelector: FileSelector
-    private val patternFlagsFactory: PatternFlagsFactory
-    private val outputFilenameBuilder: OutputFilenameBuilder
-    private val summaryBuilder: SummaryBuilder
-    private val processor: ReplacementProcessor
+class ReplacerMojo : AbstractMojo() {
+    private val summaryBuilder = SummaryBuilder()
 
     /**
      * File to check and replace tokens. Path to single file to replace tokens in. The file must be
@@ -184,7 +179,7 @@ class ReplacerMojo : AbstractMojo {
      *
      * @parameter
      */
-    private var replacements: List<Replacement>? = null
+    private val replacements: List<Replacement> by lazy { buildReplacements() }
 
     /**
      * Comments enabled in the tokenValueMapFile. Comment lines start with '#'. If your token starts
@@ -309,31 +304,6 @@ class ReplacerMojo : AbstractMojo {
      */
     private var maxReplacements = Int.MAX_VALUE
 
-    constructor() : super() {
-        tokenValueMapFactory = TokenValueMapFactory()
-        fileSelector = FileSelector()
-        patternFlagsFactory = PatternFlagsFactory()
-        outputFilenameBuilder = OutputFilenameBuilder()
-        summaryBuilder = SummaryBuilder()
-        processor = ReplacementProcessor()
-    }
-
-    constructor(
-        processor: ReplacementProcessor,
-        tokenValueMapFactory: TokenValueMapFactory,
-        fileSelector: FileSelector,
-        patternFlagsFactory: PatternFlagsFactory,
-        outputFilenameBuilder: OutputFilenameBuilder,
-        summaryBuilder: SummaryBuilder
-    ) : super() {
-        this.processor = processor
-        this.tokenValueMapFactory = tokenValueMapFactory
-        this.fileSelector = fileSelector
-        this.patternFlagsFactory = patternFlagsFactory
-        this.outputFilenameBuilder = outputFilenameBuilder
-        this.summaryBuilder = summaryBuilder
-    }
-
     override fun execute() {
         try {
             if (isSkip) {
@@ -344,18 +314,18 @@ class ReplacerMojo : AbstractMojo {
                 log.info("Ignoring missing file")
                 return
             }
-            val replacements: List<Replacement> = getDelimiterReplacements(buildReplacements())
+            val replacements: List<Replacement> = getDelimiterReplacements(replacements)
             addIncludesFilesAndExcludedFiles()
             if (includes.isEmpty() && file?.isBlank() == true) {
                 log.warn("No input file/s defined")
                 return
             }
             if (includes.isEmpty()) {
-                replaceContents(processor, limit(replacements), file!!)
+                replaceContents(limit(replacements), file!!)
                 return
             }
-            for (file in limit(fileSelector.listIncludes(basedir, includes, excludes))) {
-                replaceContents(processor, replacements, file)
+            for (file in limit(FileSelector.listIncludes(basedir, includes, excludes))) {
+                replaceContents(replacements, file)
             }
         } catch (e: Exception) {
             log.error(e.message)
@@ -410,19 +380,15 @@ class ReplacerMojo : AbstractMojo {
         }
     }
 
-    private fun replaceContents(
-        processor: ReplacementProcessor,
-        replacements: List<Replacement>,
-        inputFile: String
-    ) {
-        val outputFileName: String = outputFilenameBuilder.buildFrom(inputFile, this)
+    private fun replaceContents(replacements: List<Replacement>, inputFile: String) {
+        val outputFileName: String = OutputFilenameBuilder.buildFrom(inputFile, this)
         try {
-            processor.replace(
+            ReplacementProcessor.replace(
                 replacements,
                 regex,
                 getBaseDirPrefixedFilename(inputFile),
                 outputFileName,
-                patternFlagsFactory.buildFlags(regexFlags),
+                PatternFlagsFactory.buildFlags(regexFlags),
                 Charset.forName(encoding)
             )
         } catch (e: PatternSyntaxException) {
@@ -431,28 +397,31 @@ class ReplacerMojo : AbstractMojo {
                 throw e
             }
         }
-        summaryBuilder.add(getBaseDirPrefixedFilename(inputFile), outputFileName, encoding, log)
+        summaryBuilder.add(
+            getBaseDirPrefixedFilename(inputFile),
+            outputFileName,
+            Charset.forName(encoding),
+            log
+        )
     }
 
     private fun buildReplacements(): List<Replacement> {
-        if (replacements != null) {
-            return replacements!!
-        }
+        val charset = Charset.forName(encoding)
         if (variableTokenValueMap != null) {
-            return tokenValueMapFactory.replacementsForVariable(
+            return TokenValueMapFactory.replacementsForVariable(
                 variableTokenValueMap!!,
                 isCommentsEnabled,
                 isUnescape,
-                Charset.forName(encoding)
+                charset
             )
         }
         if (tokenValueMap == null) {
             val replacement =
                 Replacement(
-                    FileUtils.readFile(tokenFile!!, Charset.forName(encoding)),
-                    FileUtils.readFile(valueFile!!, Charset.forName(encoding)),
+                    FileUtils.readFile(tokenFile!!, charset),
+                    FileUtils.readFile(valueFile!!, charset),
                     isUnescape,
-                    Charset.forName(encoding)
+                    charset
                 )
             return listOf(replacement)
         }
@@ -463,11 +432,11 @@ class ReplacerMojo : AbstractMojo {
             )
             tokenValueMapFile = tokenValueMap!!
         }
-        return tokenValueMapFactory.replacementsForFile(
+        return TokenValueMapFactory.replacementsForFile(
             tokenValueMapFile,
             isCommentsEnabled,
             isUnescape,
-            Charset.forName(encoding)
+            charset
         )
     }
 
@@ -475,7 +444,7 @@ class ReplacerMojo : AbstractMojo {
         if (delimiters.isEmpty()) {
             return replacements
         }
-        val newReplacements: MutableList<Replacement> = ArrayList<Replacement>()
+        val newReplacements = mutableListOf<Replacement>()
         for (replacement in replacements) {
             for (delimiter in buildDelimiters()) {
                 val withDelimiter: Replacement =

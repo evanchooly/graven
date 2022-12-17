@@ -6,7 +6,7 @@ import java.io.StringReader
 import java.nio.charset.Charset
 import java.util.StringTokenizer
 
-class TokenValueMapFactory() {
+object TokenValueMapFactory {
 
     fun replacementsForVariable(
         variable: String,
@@ -83,13 +83,11 @@ class TokenValueMapFactory() {
         return "No value for token: $line. Make sure that tokens have values in pairs in the format: token=value"
     }
 
-    private fun ignoreFragment(line: String?, commentsEnabled: Boolean): Boolean {
-        return line!!.length == 0 || commentsEnabled && line.startsWith(COMMENT_PREFIX)
+    private fun ignoreFragment(line: String, commentsEnabled: Boolean): Boolean {
+        return line.isEmpty() || commentsEnabled && line.startsWith(COMMENT_PREFIX)
     }
 
-    companion object {
-        private const val SEPARATOR_ESCAPER = '\\'
-        private const val SEPARATOR = '='
-        private const val COMMENT_PREFIX = "#"
-    }
+    private const val SEPARATOR_ESCAPER = '\\'
+    private const val SEPARATOR = '='
+    private const val COMMENT_PREFIX = "#"
 }
