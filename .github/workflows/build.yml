@@ -20,7 +20,6 @@ jobs:
         gradle: [ 7.6, 7.3, 6.9.1 ]
     uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
-      java: ${{ matrix.java }}
       reuseBuild: true
       maven-flags: "-Dgradle.version=${{ matrix.gradle }}"
 
