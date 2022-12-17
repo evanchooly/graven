@@ -27,6 +27,7 @@
 
         <kotlin.version>1.7.22</kotlin.version>
         <maven.version>3.8.6</maven.version>
+        <spotless.version>2.31.0</spotless.version>
     </properties>
 
     <repositories>
@@ -37,6 +38,24 @@
     </repositories>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>2.27.2</version>
+
+                    <configuration>
+                        <kotlin>
+                            <ktfmt>
+                                <style>KOTLINLANG</style>
+                                <!-- optional, other options are DEFAULT, DROPBOX, GOOGLE and KOTLINLANG -->
+                            </ktfmt>
+                        </kotlin>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -372,6 +391,78 @@
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+        <profile>
+            <id>code-audits</id>
+            <activation>
+                <property>
+                    <name>code-audits</name>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+            <build>
+                <defaultGoal>verify</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+            <id>format-kotlin</id>
+            <activation>
+                <property>
+                    <name>!code-audits</name>
+                </property>
+                <file>
+                    <exists>src/main/kotlin</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>format-kotlin</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>apply</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>kotlin code checks</id>
+            <activation>
+                <property>
+                    <name>code-audits</name>
+                </property>
+                <file>
+                    <exists>src/main/kotlin</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>validate sources</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>check</goal>
                                 </goals>
                             </execution>
                         </executions>
