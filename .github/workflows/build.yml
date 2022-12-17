@@ -1,0 +1,38 @@
+name: Build Project
+
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/*'
+  workflow_dispatch:
+
+jobs:
+  Build:
+    uses: evanchooly/workflows/.github/workflows/build.yml@master
+    with:
+      saveBuild: true
+
+  Test:
+    needs:
+      - Build
+    strategy:
+      matrix:
+        gradle: [ 7.6, 7.3, 6.9.1 ]
+    uses: evanchooly/workflows/.github/workflows/build.yml@master
+    with:
+      java: ${{ matrix.java }}
+      reuseBuild: true
+      maven-flags: "-Dgradle.version=${{ matrix.gradle }}"
+
+  Snapshots:
+    if: github.ref_type == 'branch'
+    needs:
+      - Test
+    uses: evanchooly/workflows/.github/workflows/release.yml@master
+    secrets:
+      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GH_TOKEN: ${{ secrets.GH_OAUTH }}
+

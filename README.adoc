@@ -1,0 +1,13 @@
+= The Gradle Plugin Maven Plugin
+
+This sounds like an odd beast because it is.  It might even be completely unwarranted!  So what problem is it trying to solve?  Let's say
+you have a project and in that project is a maven plugin.  Because you're a kind soul, you also want to offer a gradle plugin but you
+don't really want to deal with two different builds.  Enter The Gradle Plugin Maven Plugin.
+
+In an ideal world, gradle resources would be in a repo somewhere fetchable and you could just add your dependencies to your pom.xml and
+move on with life.  If they exist somewhere I haven't found them.  What this plugin does for you is bridge the lifecycles of maven's
+build to gradle so that you can trigger a gradle build of your plugin from the comforts of your maven build.
+
+This plugin will also help synchronize dependency versions defined in your maven build with those needed by gradle to build your plugin.
+And once all that's done, your gradle plugin artifact will be attached to your maven build as if nothing sneaky happened.  With a bit of
+luck, you'll hardly know you're running gradle at all!
