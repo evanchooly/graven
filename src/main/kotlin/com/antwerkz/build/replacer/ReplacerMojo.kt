@@ -4,7 +4,6 @@ import com.antwerkz.build.replacer.file.FileUtils
 import com.antwerkz.build.replacer.include.FileSelector
 import java.io.File
 import java.nio.charset.Charset
-import java.util.Arrays
 import java.util.regex.PatternSyntaxException
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugin.MojoExecutionException
@@ -19,7 +18,7 @@ import org.apache.maven.plugins.annotations.Mojo
  * @phase compile
  */
 @Mojo(name = "replacer", defaultPhase = PROCESS_SOURCES, threadSafe = true)
-class ReplacerMojo : AbstractMojo() {
+open class ReplacerMojo : AbstractMojo() {
     private val summaryBuilder = SummaryBuilder()
 
     /**
@@ -36,7 +35,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var includes: MutableList<String> = ArrayList()
+    var includes: MutableList<String> = ArrayList()
 
     /**
      * List of files to exclude for multiple (or single) replacement. In Ant format (*\/directory/
@@ -44,7 +43,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var excludes: MutableList<String> = ArrayList()
+    var excludes: MutableList<String> = ArrayList()
 
     /**
      * Comma separated list of includes. This is split up and used the same way a array of includes
@@ -71,7 +70,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var token: String? = null
+    var token: String? = null
 
     /**
      * Token file containing a token to be replaced in the target file/s. May be multiple words or
@@ -80,7 +79,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var tokenFile: String? = null
+    var tokenFile: String? = null
 
     /**
      * Ignore missing target file. Use only with file configuration (not includes etc). Set to true
@@ -89,7 +88,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var ignoreMissingFile = false
+    var ignoreMissingFile = false
 
     /**
      * Value to replace token with. The text to be written over any found tokens. If no value is
@@ -98,7 +97,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var value: String? = null
+    var value: String? = null
 
     /**
      * A file containing a value to replace the given token with. May be multiple words or lines.
@@ -106,7 +105,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var valueFile: String? = null
+    var valueFile: String? = null
 
     /**
      * Indicates if the token should be located with regular expressions. This should be set to
@@ -115,7 +114,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var regex = true
+    var regex = true
 
     /**
      * Output to another file. The input file is read and the final output (after replacing tokens)
@@ -145,7 +144,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var tokenValueMap: String? = null
+    var tokenValueMap: String? = null
 
     /**
      * Optional base directory for each file to replace. Path to base relative files for
@@ -170,7 +169,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var regexFlags: List<String> = emptyList()
+    var regexFlags: List<String> = emptyList()
 
     /**
      * List of replacements with token/value pairs. Each replacement element to contain sub-elements
@@ -179,7 +178,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private val replacements: List<Replacement> by lazy { buildReplacements() }
+    lateinit var replacements: List<Replacement>
 
     /**
      * Comments enabled in the tokenValueMapFile. Comment lines start with '#'. If your token starts
@@ -219,7 +218,7 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter default-value="false"
      */
-    private var quiet = false
+    var quiet = false
 
     /**
      * Unescape tokens and values to Java format. e.g. token\n is unescaped to token(carriage
@@ -263,21 +262,12 @@ class ReplacerMojo : AbstractMojo() {
     var isIgnoreErrors = false
 
     /**
-     * X-Path expression for locating node's whose content you wish to replace. This is useful if
-     * you have the same token appearing in many nodes but wish to only replace the contents of one
-     * or more of them.
-     *
-     * @parameter
-     */
-    private var xpath: String? = null
-
-    /**
      * File encoding used when reading and writing files. Default system encoding used when not
      * specified.
      *
      * @parameter default-value="${project.build.sourceEncoding}"
      */
-    private var encoding: String = "UTF-8"
+    var encoding: String = "UTF-8"
 
     /**
      * Regular expression is run on an input file's name to create the output file with. Must be
@@ -302,9 +292,12 @@ class ReplacerMojo : AbstractMojo() {
      *
      * @parameter
      */
-    private var maxReplacements = Int.MAX_VALUE
+    var maxReplacements = Int.MAX_VALUE
 
     override fun execute() {
+        if (!::replacements.isInitialized) {
+            replacements = buildReplacements()
+        }
         try {
             if (isSkip) {
                 log.info("Skipping")
@@ -352,42 +345,34 @@ class ReplacerMojo : AbstractMojo() {
             log.error(INVALID_IGNORE_MISSING_FILE_MESSAGE)
             throw MojoExecutionException(INVALID_IGNORE_MISSING_FILE_MESSAGE)
         }
-        return ignoreMissingFile && FileUtils.fileNotExists(getBaseDirPrefixedFilename(file!!))
+        return ignoreMissingFile && getBaseDirPrefixedFilename(file!!).exists()
     }
 
-    private fun getBaseDirPrefixedFilename(file: String): String {
-        return if (basedir.isBlank() || FileUtils.isAbsolutePath(file)) {
-            file
-        } else basedir + File.separator + file
-    }
+    private fun getBaseDirPrefixedFilename(file: String) =
+        if (basedir.isBlank() || FileUtils.isAbsolutePath(file)) File(file) else File(basedir, file)
 
     private fun addIncludesFilesAndExcludedFiles() {
-        if (filesToInclude != null) {
-            val splitFiles =
-                filesToInclude!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            addToList(Arrays.asList<String>(*splitFiles), includes)
+        filesToInclude?.let { files ->
+            includes.addAll(files.split(",").dropLastWhile { it.isEmpty() }.toTypedArray())
         }
-        if (filesToExclude != null) {
-            val splitFiles =
-                filesToExclude!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            addToList(Arrays.asList<String>(*splitFiles), excludes)
+        filesToExclude?.let { files ->
+            excludes.addAll(files.split(",").dropLastWhile { it.isEmpty() }.toTypedArray())
         }
     }
 
-    private fun addToList(toAdds: List<String>, destination: MutableList<String>) {
-        for (toAdd in toAdds) {
-            destination.add(toAdd.trim { it <= ' ' })
-        }
+    private fun MutableList<String>.addAll(toAdds: Array<String>) {
+        addAll(toAdds.map { it.trim() })
     }
 
     private fun replaceContents(replacements: List<Replacement>, inputFile: String) {
         val outputFileName: String = OutputFilenameBuilder.buildFrom(inputFile, this)
+        val outputFile = File(outputFileName)
         try {
             ReplacementProcessor.replace(
                 replacements,
                 regex,
                 getBaseDirPrefixedFilename(inputFile),
-                outputFileName,
+                outputFile,
                 PatternFlagsFactory.buildFlags(regexFlags),
                 Charset.forName(encoding)
             )
@@ -399,7 +384,7 @@ class ReplacerMojo : AbstractMojo() {
         }
         summaryBuilder.add(
             getBaseDirPrefixedFilename(inputFile),
-            outputFileName,
+            outputFile,
             Charset.forName(encoding),
             log
         )
@@ -418,19 +403,19 @@ class ReplacerMojo : AbstractMojo() {
         if (tokenValueMap == null) {
             val replacement =
                 Replacement(
-                    FileUtils.readFile(tokenFile!!, charset),
-                    FileUtils.readFile(valueFile!!, charset),
-                    isUnescape,
-                    charset
+                    tokenFile = File(tokenFile!!),
+                    valueFile = File(valueFile!!),
+                    unescape = isUnescape,
+                    encoding = charset
                 )
             return listOf(replacement)
         }
         var tokenValueMapFile = getBaseDirPrefixedFilename(tokenValueMap!!)
-        if (FileUtils.fileNotExists(tokenValueMapFile)) {
+        if (!tokenValueMapFile.exists()) {
             log.info(
                 "'$tokenValueMapFile' does not exist and assuming this is an absolute file name."
             )
-            tokenValueMapFile = tokenValueMap!!
+            tokenValueMapFile = File(tokenValueMap!!)
         }
         return TokenValueMapFactory.replacementsForFile(
             tokenValueMapFile,

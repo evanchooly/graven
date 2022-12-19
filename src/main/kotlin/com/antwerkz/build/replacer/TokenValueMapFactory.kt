@@ -1,7 +1,7 @@
 package com.antwerkz.build.replacer
 
-import com.antwerkz.build.replacer.file.FileUtils
 import java.io.BufferedReader
+import java.io.File
 import java.io.StringReader
 import java.nio.charset.Charset
 import java.util.StringTokenizer
@@ -28,12 +28,12 @@ object TokenValueMapFactory {
     }
 
     fun replacementsForFile(
-        tokenValueMapFile: String,
+        tokenValueMapFile: File,
         commentsEnabled: Boolean,
         unescape: Boolean,
         encoding: Charset
     ): List<Replacement> {
-        val contents: String = FileUtils.readFile(tokenValueMapFile, encoding)
+        val contents: String = tokenValueMapFile.readText(encoding)
         val reader = BufferedReader(StringReader(contents))
         var fragment: String
         val replacements: MutableList<Replacement> = ArrayList()
@@ -71,8 +71,10 @@ object TokenValueMapFactory {
         if (settingToken) {
             return
         }
-        val tokenVal = token.toString().trim { it <= ' ' }
-        replacements.add(Replacement(tokenVal, value.trim { it <= ' ' }, unescape, encoding))
+        val tokenVal = token.toString().trim()
+        replacements.add(
+            Replacement(tokenVal, value.trim(), unescape = unescape, encoding = encoding)
+        )
     }
 
     private fun isSeparatorAt(i: Int, line: String?): Boolean {

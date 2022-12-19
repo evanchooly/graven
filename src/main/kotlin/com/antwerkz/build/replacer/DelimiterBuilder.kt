@@ -1,6 +1,6 @@
 package com.antwerkz.build.replacer
 
-class DelimiterBuilder(delimiter: String) {
+class DelimiterBuilder(delimiter: String = "") {
     private val start: String
     private var end: String? = null
 

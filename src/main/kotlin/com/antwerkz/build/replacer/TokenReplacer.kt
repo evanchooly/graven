@@ -10,8 +10,8 @@ object TokenReplacer : Replacer {
         regexFlags: Int
     ): String {
         return if (regex) {
-            replaceRegex(content, replacement.getToken(), replacement.getValue(), regexFlags)
-        } else replaceNonRegex(content, replacement.getToken(), replacement.getValue())
+            replaceRegex(content, replacement.token, replacement.value, regexFlags)
+        } else replaceNonRegex(content, replacement.token, replacement.value)
     }
 
     private fun replaceRegex(content: String, token: String, value: String, flags: Int): String {
