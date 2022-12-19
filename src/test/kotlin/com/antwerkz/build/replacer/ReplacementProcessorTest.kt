@@ -1,98 +1,83 @@
 package com.antwerkz.build.replacer
 
-import com.antwerkz.build.replacer.file.FileUtils
-import com.antwerkz.build.replacer.file.FileUtilsTest.Companion.utf8
-import java.io.File
-import java.nio.charset.Charset
-import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyZeroInteractions
-import org.mockito.Mockito.`when`
+import com.antwerkz.build.replacer.Tests.CONTENT
+import com.antwerkz.build.replacer.Tests.FILE
+import com.antwerkz.build.replacer.Tests.NEW_CONTENT
+import com.antwerkz.build.replacer.Tests.OUTPUT_FILE
+import com.antwerkz.build.replacer.Tests.REGEX_FLAGS
+import com.antwerkz.build.replacer.Tests.assertFile
+import com.antwerkz.build.replacer.Tests.generateFile
+import com.antwerkz.build.replacer.Tests.utf8
 import org.testng.Assert.assertThrows
-import org.testng.annotations.BeforeTest
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 class ReplacementProcessorTest {
+    lateinit var replacement: Replacement
 
-    @Mock lateinit var replacer: Replacer
-    @Mock lateinit var replacement: Replacement
-
-    @BeforeTest
+    @BeforeMethod
     fun setUp() {
-        `when`(FileUtils.readFile(File(FILE), Charset.defaultCharset())).thenReturn(CONTENT)
-        `when`(replacement.token).thenReturn(TOKEN)
-        `when`(replacement.value).thenReturn(VALUE)
+        replacement = Replacement("token", "value")
+        generateFile(FILE, CONTENT)
     }
 
     @Test
     fun shouldWriteReplacedRegexTextToFile() {
-        `when`(replacer.replace(CONTENT, replacement, true, REGEX_FLAGS)).thenReturn(NEW_CONTENT)
+        //                `when`(TokenReplacer.replace(CONTENT, replacement, true,
+        // REGEX_FLAGS)).thenReturn(NEW_CONTENT)
         ReplacementProcessor.replace(
             listOf(replacement),
-            USE_REGEX,
-            File(FILE),
-            File(OUTPUT_FILE),
+            true,
+            FILE,
+            OUTPUT_FILE,
             REGEX_FLAGS,
             utf8
         )
-        verify(FileUtils).writeToFile(File(OUTPUT_FILE), NEW_CONTENT, utf8)
+        assertFile(OUTPUT_FILE, NEW_CONTENT)
     }
 
     @Test
     fun shouldWriteReplacedNonRegexTextToFile() {
-        `when`(replacer.replace(CONTENT, replacement, false, REGEX_FLAGS)).thenReturn(NEW_CONTENT)
+        //                `when`(TokenReplacer.replace(CONTENT, replacement, false,
+        // REGEX_FLAGS)).thenReturn(NEW_CONTENT)
         ReplacementProcessor.replace(
             listOf(replacement),
-            NO_REGEX,
-            File(FILE),
-            File(OUTPUT_FILE),
+            false,
+            FILE,
+            OUTPUT_FILE,
             REGEX_FLAGS,
             utf8
         )
-        verify(FileUtils).writeToFile(File(OUTPUT_FILE), NEW_CONTENT, utf8)
+        assertFile(OUTPUT_FILE, NEW_CONTENT)
     }
 
     @Test
     fun shouldThrowExceptionIfNoToken() {
         assertThrows(IllegalArgumentException::class.java) {
-            `when`(replacement.token).thenReturn(null)
+            replacement.token = ""
             ReplacementProcessor.replace(
                 listOf(replacement),
-                USE_REGEX,
-                File(FILE),
-                File(OUTPUT_FILE),
+                true,
+                FILE,
+                OUTPUT_FILE,
                 REGEX_FLAGS,
                 utf8
             )
-            verifyZeroInteractions(FileUtils)
         }
     }
 
     @Test
     fun shouldThrowExceptionIfEmptyToken() {
         assertThrows(IllegalArgumentException::class.java) {
-            `when`(replacement.token).thenReturn("")
+            replacement.token = ""
             ReplacementProcessor.replace(
                 listOf(replacement),
-                USE_REGEX,
-                File(FILE),
-                File(OUTPUT_FILE),
+                true,
+                FILE,
+                OUTPUT_FILE,
                 REGEX_FLAGS,
                 utf8
             )
-            verifyZeroInteractions(FileUtils)
         }
-    }
-
-    companion object {
-        private const val FILE = "file"
-        private const val OUTPUT_FILE = "outputFile"
-        private const val NEW_CONTENT = "new content"
-        private const val REGEX_FLAGS = 0
-        private const val USE_REGEX = true
-        private const val NO_REGEX = false
-        private const val TOKEN = "token"
-        private const val CONTENT = "content"
-        private const val VALUE = "value"
     }
 }

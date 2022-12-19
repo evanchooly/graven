@@ -1,8 +1,9 @@
 package com.antwerkz.build.replacer.file
 
+import com.antwerkz.build.replacer.Tests.ascii
+import com.antwerkz.build.replacer.Tests.utf8
 import java.io.File
 import java.io.FileWriter
-import java.nio.charset.Charset
 import java.util.UUID
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
@@ -19,15 +20,13 @@ class FileUtilsTest {
     companion object {
         const val NON_ASCII_CONTENT = "한국어/조선말"
         const val CONTENT = "content"
-        val ascii: Charset = Charset.forName("US-ASCII")
-        val utf8: Charset = Charset.forName("UTF-8")
     }
 
     private lateinit var folder: File
 
     @BeforeMethod
     fun tempDir() {
-        folder = File(System.getProperty("tmp.io.dir"), UUID.randomUUID().toString())
+        folder = File("target/tempfolders", UUID.randomUUID().toString())
         folder.mkdirs()
         folder.deleteOnExit()
     }
@@ -105,7 +104,7 @@ class FileUtilsTest {
     @Test
     fun shouldThrowExceptionWhenCannotCreateDir() {
         try {
-            FileUtils.ensureFolderStructureExists(File("/f*\"%e\$d/a%*bc$:\\te\"st"))
+            FileUtils.ensureFolderStructureExists(File(".../f*\"%e\$d/a%*bc$:\\te\"st"))
             fail("Should have thrown Error")
         } catch (e: IllegalStateException) {
             assertThat(e.message, startsWith("Error creating directory"))

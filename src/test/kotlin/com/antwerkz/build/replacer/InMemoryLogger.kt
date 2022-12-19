@@ -25,23 +25,23 @@ class InMemoryLogger : AbstractLogger(Logger.LEVEL_DEBUG, "in memory") {
     fun info() = logLevels[LEVEL_INFO] as MutableList<Entry>
     fun error() = logLevels[LEVEL_ERROR] as MutableList<Entry>
     fun fatal() = logLevels[LEVEL_FATAL] as MutableList<Entry>
-    override fun debug(message: String, throwable: Throwable) {
+    override fun debug(message: String, throwable: Throwable?) {
         debug() += Entry(LEVEL_DEBUG, message, throwable)
     }
 
-    override fun info(message: String, throwable: Throwable) {
+    override fun info(message: String, throwable: Throwable?) {
         info() += Entry(LEVEL_INFO, message, throwable)
     }
 
-    override fun warn(message: String, throwable: Throwable) {
+    override fun warn(message: String, throwable: Throwable?) {
         warn() += Entry(LEVEL_WARN, message, throwable)
     }
 
-    override fun error(message: String, throwable: Throwable) {
+    override fun error(message: String, throwable: Throwable?) {
         error() += Entry(LEVEL_ERROR, message, throwable)
     }
 
-    override fun fatalError(message: String, throwable: Throwable) {
+    override fun fatalError(message: String, throwable: Throwable?) {
         fatal() += Entry(LEVEL_FATAL, message, throwable)
     }
 

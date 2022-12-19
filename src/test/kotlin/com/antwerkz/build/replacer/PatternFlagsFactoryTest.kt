@@ -24,25 +24,20 @@ class PatternFlagsFactoryTest {
         }
     }
 
-    @DataProvider
+    @DataProvider(name="params")
     fun params(): Array<Array<Any>> {
         return arrayOf(
-            arrayOf(
-                arrayOf<Any?>(null, -1),
-                arrayOf<Any?>(mutableListOf<Any>(), -1),
-                arrayOf<Any?>(mutableListOf("CANON_EQ"), Pattern.CANON_EQ),
-                arrayOf<Any?>(mutableListOf("CASE_INSENSITIVE"), Pattern.CASE_INSENSITIVE),
-                arrayOf<Any?>(mutableListOf("COMMENTS"), Pattern.COMMENTS),
-                arrayOf<Any?>(mutableListOf("DOTALL"), Pattern.DOTALL),
-                arrayOf<Any?>(mutableListOf("LITERAL"), Pattern.LITERAL),
-                arrayOf<Any?>(mutableListOf("MULTILINE"), Pattern.MULTILINE),
-                arrayOf<Any?>(mutableListOf("UNICODE_CASE"), Pattern.UNICODE_CASE),
-                arrayOf<Any?>(mutableListOf("UNIX_LINES"), Pattern.UNIX_LINES),
-                arrayOf<Any?>(
-                    mutableListOf("CANON_EQ", "CASE_INSENSITIVE"),
-                    Pattern.CANON_EQ or Pattern.CASE_INSENSITIVE
-                )
-            )
+                arrayOf(mutableListOf<Any>(), -1),
+                arrayOf(mutableListOf<Any>(), -1),
+                arrayOf(mutableListOf("CANON_EQ"), Pattern.CANON_EQ),
+                arrayOf(mutableListOf("CASE_INSENSITIVE"), Pattern.CASE_INSENSITIVE),
+                arrayOf(mutableListOf("COMMENTS"), Pattern.COMMENTS),
+                arrayOf(mutableListOf("DOTALL"), Pattern.DOTALL),
+                arrayOf(mutableListOf("LITERAL"), Pattern.LITERAL),
+                arrayOf(mutableListOf("MULTILINE"), Pattern.MULTILINE),
+                arrayOf(mutableListOf("UNICODE_CASE"), Pattern.UNICODE_CASE),
+                arrayOf(mutableListOf("UNIX_LINES"), Pattern.UNIX_LINES),
+                arrayOf(mutableListOf("CANON_EQ", "CASE_INSENSITIVE"), Pattern.CANON_EQ or Pattern.CASE_INSENSITIVE)
         )
     }
 }

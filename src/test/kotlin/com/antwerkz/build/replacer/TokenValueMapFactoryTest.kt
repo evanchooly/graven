@@ -1,7 +1,8 @@
 package com.antwerkz.build.replacer
 
-import com.antwerkz.build.replacer.file.FileUtils
-import com.antwerkz.build.replacer.file.FileUtilsTest.Companion.utf8
+import com.antwerkz.build.replacer.Tests.FILE
+import com.antwerkz.build.replacer.Tests.generateFile
+import com.antwerkz.build.replacer.Tests.utf8
 import java.io.File
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -11,7 +12,6 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.notNullValue
-import org.mockito.Mockito.`when`
 import org.testng.Assert.assertThrows
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
@@ -19,10 +19,9 @@ import org.testng.annotations.Test
 class TokenValueMapFactoryTest {
     @Test
     fun shouldReturnReplacementsFromFile() {
-        val file = File(FILENAME)
-        `when`(file.readText(utf8)).thenReturn("token=value")
+        generateFile(FILE, "token=value")
         val replacements =
-            TokenValueMapFactory.replacementsForFile(file, COMMENTS_DISABLED, false, utf8)
+            TokenValueMapFactory.replacementsForFile(FILE, COMMENTS_DISABLED, false, utf8)
         assertThat(replacements, notNullValue())
         assertThat(replacements.size, `is`(1))
         assertThat(replacements[0].token, equalTo("token"))
@@ -32,8 +31,7 @@ class TokenValueMapFactoryTest {
     @Test
     fun shouldReturnReplacementsFromFileAndIgnoreBlankLinesAndComments() {
         val file = File(FILENAME)
-        `when`(FileUtils.readFile(file, utf8))
-            .thenReturn("\n  \ntoken1=value1\ntoken2 = value2\n#some comment\n")
+        generateFile(file, "\n  \ntoken1=value1\ntoken2 = value2\n#some comment\n")
         val replacements =
             TokenValueMapFactory.replacementsForFile(file, COMMENTS_ENABLED, false, utf8)
         assertThat(replacements, notNullValue())
@@ -47,8 +45,7 @@ class TokenValueMapFactoryTest {
     @Test
     fun shouldReturnReplacementsFromFileAndIgnoreBlankLinesUsingCommentLinesIfCommentsDisabled() {
         val file = File(FILENAME)
-        `when`(FileUtils.readFile(file, utf8))
-            .thenReturn("\n  \ntoken1=value1\ntoken2=value2\n#some=#comment\n")
+        generateFile(file, "\n  \ntoken1=value1\ntoken2=value2\n#some=#comment\n")
         val replacements =
             TokenValueMapFactory.replacementsForFile(file, COMMENTS_DISABLED, false, utf8)
         assertThat(replacements, notNullValue())
@@ -64,7 +61,7 @@ class TokenValueMapFactoryTest {
     @Test
     fun shouldIgnoreTokensWithNoSeparatedValue() {
         val file = File(FILENAME)
-        `when`(FileUtils.readFile(file, utf8)).thenReturn("#comment\ntoken2")
+        generateFile(file, "#comment\ntoken2")
         val replacements =
             TokenValueMapFactory.replacementsForFile(file, COMMENTS_DISABLED, false, utf8)
         assertThat(replacements, notNullValue())
@@ -74,8 +71,7 @@ class TokenValueMapFactoryTest {
     @Test
     fun shouldReturnRegexReplacementsFromFile() {
         val file = File(FILENAME)
-        `when`(FileUtils.readFile(file, utf8))
-            .thenReturn("\\=tok\\=en1=val\\=ue1\nto\$ke..n2=value2")
+        generateFile(file, "\\=tok\\=en1=val\\=ue1\nto\$ke..n2=value2")
         val replacements =
             TokenValueMapFactory.replacementsForFile(file, COMMENTS_ENABLED, false, utf8)
         assertThat(replacements, notNullValue())
@@ -89,8 +85,7 @@ class TokenValueMapFactoryTest {
     @Test
     fun shouldReturnRegexReplacementsFromFileUnescaping() {
         val file = File(FILENAME)
-        `when`(FileUtils.readFile(file, utf8))
-            .thenReturn("\\\\=tok\\\\=en1=val\\\\=ue1\nto\$ke..n2=value2")
+        generateFile(file, "\\\\=tok\\\\=en1=val\\\\=ue1\nto\$ke..n2=value2")
         val replacements =
             TokenValueMapFactory.replacementsForFile(file, COMMENTS_ENABLED, true, utf8)
         assertThat(replacements, notNullValue())
@@ -104,18 +99,16 @@ class TokenValueMapFactoryTest {
     @Test
     fun shouldThrowExceptionIfNoTokenForValue() {
         assertThrows(IllegalArgumentException::class.java) {
-            val file = File(FILENAME)
-            `when`(FileUtils.readFile(file, utf8)).thenReturn("=value")
-            TokenValueMapFactory.replacementsForFile(file, COMMENTS_DISABLED, false, utf8)
+            generateFile(FILE, "=value")
+            TokenValueMapFactory.replacementsForFile(FILE, COMMENTS_DISABLED, false, utf8)
         }
     }
 
     @Test
     fun shouldSupportEmptyFileAndReturnNoReplacements() {
-        val file = File(FILENAME)
-        `when`(FileUtils.readFile(file, utf8)).thenReturn("")
+        generateFile(FILE, "")
         val replacements =
-            TokenValueMapFactory.replacementsForFile(file, COMMENTS_DISABLED, false, utf8)
+            TokenValueMapFactory.replacementsForFile(FILE, COMMENTS_DISABLED, false, utf8)
         assertThat(replacements, notNullValue())
         assertTrue(replacements.isEmpty())
     }

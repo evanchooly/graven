@@ -9,6 +9,7 @@ import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugin.MojoExecutionException
 import org.apache.maven.plugins.annotations.LifecyclePhase.PROCESS_SOURCES
 import org.apache.maven.plugins.annotations.Mojo
+import org.apache.maven.plugins.annotations.Parameter
 
 /**
  * Goal replaces token with value inside file
@@ -25,24 +26,24 @@ open class ReplacerMojo : AbstractMojo() {
      * File to check and replace tokens. Path to single file to replace tokens in. The file must be
      * text (ascii). Based on current execution path.
      *
-     * @parameter
      */
+    @Parameter
     var file: String? = null
 
     /**
      * List of files to include for multiple (or single) replacement. In Ant format (*\/directory/
      * **.properties) Cannot use with outputFile.
      *
-     * @parameter
      */
+    @Parameter
     var includes: MutableList<String> = ArrayList()
 
     /**
      * List of files to exclude for multiple (or single) replacement. In Ant format (*\/directory/
      * **.properties) Cannot use with outputFile.
      *
-     * @parameter
      */
+    @Parameter
     var excludes: MutableList<String> = ArrayList()
 
     /**
@@ -50,8 +51,8 @@ open class ReplacerMojo : AbstractMojo() {
      * would be. In Ant format (*\/directory/ **.properties). Files not found are ignored by
      * default.
      *
-     * @parameter
      */
+    @Parameter
     var filesToInclude: String? = null
 
     /**
@@ -60,16 +61,16 @@ open class ReplacerMojo : AbstractMojo() {
      * format (**\/directory/do-not-replace.properties). The files replaced will be derived from the
      * list of includes and excludes.
      *
-     * @parameter
      */
+    @Parameter
     var filesToExclude: String? = null
 
     /**
      * Token to replace. The text to replace within the given file. This may or may not be a regular
      * expression (see regex notes above).
      *
-     * @parameter
      */
+    @Parameter
     var token: String? = null
 
     /**
@@ -77,8 +78,8 @@ open class ReplacerMojo : AbstractMojo() {
      * lines. This is useful if you do not wish to expose the token within your pom or the token is
      * long.
      *
-     * @parameter
      */
+    @Parameter
     var tokenFile: String? = null
 
     /**
@@ -86,8 +87,8 @@ open class ReplacerMojo : AbstractMojo() {
      * to not fail build if the file is not found. First checks if file exists and exits without
      * attempting to replace anything.
      *
-     * @parameter
      */
+    @Parameter
     var ignoreMissingFile = false
 
     /**
@@ -95,16 +96,16 @@ open class ReplacerMojo : AbstractMojo() {
      * given, the tokens found are replaced with an empty string (effectively removing any tokens
      * found). You can also reference grouped regex matches made in the token here by $1, $2, etc.
      *
-     * @parameter
      */
+    @Parameter
     var value: String? = null
 
     /**
      * A file containing a value to replace the given token with. May be multiple words or lines.
      * This is useful if you do not wish to expose the value within your pom or the value is long.
      *
-     * @parameter
      */
+    @Parameter
     var valueFile: String? = null
 
     /**
@@ -112,8 +113,8 @@ open class ReplacerMojo : AbstractMojo() {
      * false if the token contains regex characters which may miss the desired tokens or even
      * replace the wrong tokens.
      *
-     * @parameter
      */
+    @Parameter
     var regex = true
 
     /**
@@ -122,8 +123,8 @@ open class ReplacerMojo : AbstractMojo() {
      * exist, the contents are overwritten. You should not use outputFile when using a list of
      * includes.
      *
-     * @parameter
      */
+    @Parameter
     var outputFile: String? = null
 
     /**
@@ -131,8 +132,8 @@ open class ReplacerMojo : AbstractMojo() {
      * replaced files to be written to. Use with outputDir to have files written to a specific base
      * location.
      *
-     * @parameter
      */
+    @Parameter
     var outputDir: String? = null
 
     /**
@@ -142,8 +143,8 @@ open class ReplacerMojo : AbstractMojo() {
      * "token=value" (without quotations). If your token contains ='s you must escape the =
      * character to \=. e.g. tok\=en=value
      *
-     * @parameter
      */
+    @Parameter
     var tokenValueMap: String? = null
 
     /**
@@ -151,24 +152,26 @@ open class ReplacerMojo : AbstractMojo() {
      * replacements from. This feature is useful for multi-module projects. Default "." which is the
      * default Maven basedir.
      *
-     * @parameter
      */
+    @Parameter
     var basedir = ""
 
     /**
      * List of standard Java regular expression Pattern flags (see Java Doc). Must contain one or
      * more of:
-     * * CANON_EQ
-     * * CASE_INSENSITIVE
-     * * COMMENTS
-     * * DOTALL
-     * * LITERAL
-     * * MULTILINE
-     * * UNICODE_CASE
-     * * UNIX_LINES
+     * <ul>
+     * <li>CANON_EQ
+     * <li>CASE_INSENSITIVE
+     * <li>COMMENTS
+     * <li>DOTALL
+     * <li>LITERAL
+     * <li>MULTILINE
+     * <li>UNICODE_CASE
+     * <li>UNIX_LINES
+     * </ul>
      *
-     * @parameter
      */
+    @Parameter
     var regexFlags: List<String> = emptyList()
 
     /**
@@ -176,56 +179,55 @@ open class ReplacerMojo : AbstractMojo() {
      * as token/value pairs. Each token within the given file will be replaced by it's respective
      * value.
      *
-     * @parameter
      */
+    @Parameter(required = true)
     lateinit var replacements: List<Replacement>
 
     /**
      * Comments enabled in the tokenValueMapFile. Comment lines start with '#'. If your token starts
      * with an '#' then you must supply the commentsEnabled parameter and with a value of false.
      * Default is true.
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue = "true")
     var isCommentsEnabled = true
 
     /**
      * Skip running this plugin. Default is false.
      *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     var isSkip = false
 
     /**
      * Base directory (appended) to use for outputDir. Having this existing but blank will cause the
      * outputDir to be based on the execution directory.
      *
-     * @parameter
      */
+    @Parameter
     var outputBasedir: String? = null
 
     /**
      * Parent directory is preserved when replacing files found from includes and being written to
      * an outputDir. Default is true.
      *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue = "true")
     var isPreserveDir = true
 
     /**
      * Stops printing a summary of files that have had replacements performed upon them when true.
      * Default is false.
      *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     var quiet = false
 
     /**
      * Unescape tokens and values to Java format. e.g. token\n is unescaped to token(carriage
      * return). Default is false.
      *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     var isUnescape = false
 
     /**
@@ -233,8 +235,8 @@ open class ReplacerMojo : AbstractMojo() {
      * also use the '' character to place the token in the desired location for matching. e.g. @
      * would match @token@. e.g. ${} would match ${token}.
      *
-     * @parameter
      */
+    @Parameter
     var delimiters: List<String> = ArrayList()
 
     /**
@@ -244,8 +246,8 @@ open class ReplacerMojo : AbstractMojo() {
      * different tokens to have replaced. Format is comma separated. e.g. token=value,token2=value2
      * Comments are not supported.
      *
-     * @parameter
      */
+    @Parameter
     var variableTokenValueMap: String? = null
 
     /**
@@ -255,10 +257,9 @@ open class ReplacerMojo : AbstractMojo() {
      * First checks if file exists and exits without attempting to replace anything. Only usable
      * with file parameter.
      *
-     * Default is false.
-     *
      * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     var isIgnoreErrors = false
 
     /**
@@ -267,14 +268,15 @@ open class ReplacerMojo : AbstractMojo() {
      *
      * @parameter default-value="${project.build.sourceEncoding}"
      */
+    @Parameter(defaultValue = "\${project.build.sourceEncoding}")
     var encoding: String = "UTF-8"
 
     /**
      * Regular expression is run on an input file's name to create the output file with. Must be
      * used in conjunction with outputFilePattern.
      *
-     * @parameter
      */
+    @Parameter
     var inputFilePattern: String? = null
 
     /**
@@ -283,15 +285,15 @@ open class ReplacerMojo : AbstractMojo() {
      *
      * The parameter outputFile is ignored when outputFilePattern is used.
      *
-     * @parameter
      */
+    @Parameter
     var outputFilePattern: String? = null
 
     /**
      * Set a maximum number of files which can be replaced per execution.
      *
-     * @parameter
      */
+    @Parameter
     var maxReplacements = Int.MAX_VALUE
 
     override fun execute() {

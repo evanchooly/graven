@@ -1,130 +1,121 @@
 package com.antwerkz.build.replacer
 
-import com.antwerkz.build.replacer.file.FileUtils
+import com.antwerkz.build.replacer.OutputFilenameBuilder.buildFrom
+import com.antwerkz.build.replacer.file.FileUtils.createFullPath
 import java.io.File
 import java.util.Locale
 import org.hamcrest.CoreMatchers.endsWith
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 class OutputFilenameBuilderTest {
-    lateinit var mojo: ReplacerMojo
-    @BeforeMethod
-    fun setUp() {
-        mojo = mock(ReplacerMojo::class.java)
-        `when`(mojo.basedir).thenReturn(BASE_DIR)
-    }
+    var mojo = ReplacerMojo()
 
     @Test
     fun shouldReturnFullPathWithAllOutputFileParams() {
-        `when`(mojo.outputDir).thenReturn(OUTPUT_DIR)
-        `when`(mojo.outputBasedir).thenReturn(OUTPUT_BASE_DIR)
-        `when`(mojo.outputFile).thenReturn(OUTPUT_FILE_WITH_PARENT)
-        `when`(mojo.isPreserveDir).thenReturn(true)
-        var output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
+        mojo.outputDir = OUTPUT_DIR
+        mojo.outputBasedir = OUTPUT_BASE_DIR
+        mojo.outputFile = OUTPUT_FILE_WITH_PARENT
+        mojo.isPreserveDir = true
         assertThat(
-            output,
-            equalTo(FileUtils.createFullPath(OUTPUT_BASE_DIR, OUTPUT_DIR, OUTPUT_FILE_WITH_PARENT))
+            buildFrom(INPUT_FILE, mojo),
+            equalTo(createFullPath(OUTPUT_BASE_DIR, OUTPUT_DIR, OUTPUT_FILE_WITH_PARENT))
         )
-        `when`(mojo.isPreserveDir).thenReturn(false)
-        output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
+        mojo.isPreserveDir = false
         assertThat(
-            output,
-            equalTo(FileUtils.createFullPath(OUTPUT_BASE_DIR, OUTPUT_DIR, OUTPUT_FILE))
+            buildFrom(INPUT_FILE, mojo),
+            equalTo(createFullPath(OUTPUT_BASE_DIR, OUTPUT_DIR, OUTPUT_FILE))
         )
     }
 
     @Test
     fun shouldPrefixBasedirWhenNotPreservingPath() {
-        `when`(mojo.isPreserveDir).thenReturn(false)
-        `when`(mojo.outputDir).thenReturn(OUTPUT_DIR)
-        val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, OUTPUT_DIR, "input")))
+        mojo.isPreserveDir = false
+        mojo.outputDir = OUTPUT_DIR
+        val output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, OUTPUT_DIR, "input")))
     }
 
     @Test
     fun shouldPreservePathWhenPreserveIsEnabled() {
-        `when`(mojo.isPreserveDir).thenReturn(true)
-        `when`(mojo.outputDir).thenReturn(OUTPUT_DIR)
-        val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, OUTPUT_DIR, INPUT_FILE)))
+        mojo.isPreserveDir = true
+        mojo.outputDir = OUTPUT_DIR
+        val output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, OUTPUT_DIR, INPUT_FILE)))
     }
 
     @Test
     fun shouldPrefixOutputDirWhenUsingOutputDirAndOutputFile() {
-        `when`(mojo.outputDir).thenReturn(OUTPUT_DIR)
-        `when`(mojo.outputFile).thenReturn(OUTPUT_FILE)
-        val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, OUTPUT_DIR, OUTPUT_FILE)))
+        mojo.outputDir = OUTPUT_DIR
+        mojo.outputFile = OUTPUT_FILE
+        val output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, OUTPUT_DIR, OUTPUT_FILE)))
     }
 
     @Test
     fun shouldReturnReplacedOutputFilenameFromPatterns() {
-        `when`(mojo.inputFilePattern).thenReturn("(.+)")
-        `when`(mojo.outputFilePattern).thenReturn("$1")
-        var output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, INPUT_FILE)))
-        `when`(mojo.inputFilePattern).thenReturn("(.+)")
-        `when`(mojo.outputFilePattern).thenReturn("$1-new")
-        output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, INPUT_FILE + "-new")))
+        mojo.inputFilePattern = "(.+)"
+        mojo.outputFilePattern = "$1"
+        var output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, INPUT_FILE)))
+        mojo.inputFilePattern = "(.+)"
+        mojo.outputFilePattern = "$1-new"
+        output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, INPUT_FILE + "-new")))
     }
 
     @Test
     fun shouldNotReturnReplacedOutputFilenameWhenMissingEitherInputOrOutputPattern() {
-        `when`(mojo.inputFilePattern).thenReturn(null)
-        `when`(mojo.outputFilePattern).thenReturn("$1-new")
-        var output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
+        mojo.inputFilePattern = null
+        mojo.outputFilePattern = "$1-new"
+        var output = buildFrom(INPUT_FILE, mojo)
         assertThat(output, not(endsWith("-new")))
-        `when`(mojo.inputFilePattern).thenReturn("(.+)")
-        `when`(mojo.outputFilePattern).thenReturn(null)
-        output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, INPUT_FILE)))
+        mojo.inputFilePattern = "(.+)"
+        mojo.outputFilePattern = null
+        output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, INPUT_FILE)))
     }
 
     @Test
     fun shouldPrefixBasedirWhenNotUsingOutputBasedir() {
-        `when`(mojo.outputDir).thenReturn(OUTPUT_DIR)
-        val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, OUTPUT_DIR, "input")))
+        mojo.outputDir = OUTPUT_DIR
+        val output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, OUTPUT_DIR, "input")))
     }
 
     @Test
     fun shouldPrefixWithOutputBasedirWhenUsingOutputBasedir() {
-        `when`(mojo.outputBasedir).thenReturn(OUTPUT_BASE_DIR)
-        `when`(mojo.outputDir).thenReturn(OUTPUT_DIR)
-        val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(OUTPUT_BASE_DIR, OUTPUT_DIR, "input")))
+        mojo.outputBasedir = OUTPUT_BASE_DIR
+        mojo.outputDir = OUTPUT_DIR
+        val output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(OUTPUT_BASE_DIR, OUTPUT_DIR, "input")))
     }
 
     @Test
     fun shouldReturnInputFileWithBaseDirWhenNoOutputDirOrNoOutputFile() {
-        val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, INPUT_FILE)))
+        val output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, INPUT_FILE)))
     }
 
     @Test
     fun shouldWriteToOutputFileWhenNotUsingOutputDirAndIsSet() {
-        `when`(mojo.outputFile).thenReturn(OUTPUT_FILE)
-        val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(FileUtils.createFullPath(BASE_DIR, OUTPUT_FILE)))
+        mojo.outputFile = OUTPUT_FILE
+        val output = buildFrom(INPUT_FILE, mojo)
+        assertThat(output, equalTo(createFullPath(BASE_DIR, OUTPUT_FILE)))
     }
 
     @Test
     fun shouldReturnIgnoreBaseDirForOutputFileWhenStartsWithAbsolutePath() {
         val os = System.getProperty("os.name").lowercase(Locale.getDefault())
         if (os.indexOf("windows") < 0) {
-            `when`(mojo.outputFile).thenReturn(File.separator + "output")
-            val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
+            mojo.outputFile = File.separator + "output"
+            val output = buildFrom(INPUT_FILE, mojo)
             assertThat(output, equalTo(File.separator + "output"))
         } else {
-            `when`(mojo.outputFile).thenReturn("C:" + File.separator + "output")
-            val output = OutputFilenameBuilder.buildFrom(INPUT_FILE, mojo)
+            mojo.outputFile = "C:" + File.separator + "output"
+            val output = buildFrom(INPUT_FILE, mojo)
             assertThat(output, equalTo("C:" + File.separator + "output"))
         }
     }

@@ -35,28 +35,25 @@ object TokenValueMapFactory {
     ): List<Replacement> {
         val contents: String = tokenValueMapFile.readText(encoding)
         val reader = BufferedReader(StringReader(contents))
-        var fragment: String
         val replacements: MutableList<Replacement> = ArrayList()
-        while (reader.readLine().also { fragment = it } != null) {
-            fragment = fragment.trim { it <= ' ' }
-            if (ignoreFragment(fragment, commentsEnabled)) {
-                continue
-            }
-            appendReplacement(replacements, fragment, unescape, encoding)
-        }
+        reader
+            .lines()
+            .map { it.trim() }
+            .filter { !ignoreFragment(it, commentsEnabled) }
+            .forEach { appendReplacement(replacements, it, unescape, encoding) }
         return replacements
     }
 
     private fun appendReplacement(
         replacements: MutableList<Replacement>,
-        fragment: String?,
+        fragment: String,
         unescape: Boolean,
         encoding: Charset
     ) {
         val token = StringBuilder()
         var value = ""
         var settingToken = true
-        for (i in 0 until fragment!!.length) {
+        for (i in fragment.indices) {
             require(!(i == 0 && fragment[0] == SEPARATOR)) { getNoValueErrorMsgFor(fragment) }
             if (settingToken && !isSeparatorAt(i, fragment)) {
                 token.append(fragment[i])

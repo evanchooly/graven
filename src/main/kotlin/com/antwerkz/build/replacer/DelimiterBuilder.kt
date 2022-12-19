@@ -29,11 +29,8 @@ class DelimiterBuilder(delimiter: String = "") {
         }
     }
 
-    fun apply(token: String): String {
-        return if (token.isEmpty()) {
-            token
-        } else String.format(FORMAT, start, token, end)
-    }
+    fun apply(token: String) =
+        if (token.isEmpty()) token else String.format(FORMAT, start, token, end)
 
     companion object {
         private const val FORMAT = "%s%s%s"

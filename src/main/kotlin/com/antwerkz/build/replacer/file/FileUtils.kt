@@ -8,16 +8,15 @@ object FileUtils {
         return filename.isBlank() || !File(filename).exists()
     }
 
-    fun ensureFolderStructureExists(file: File) {
-        if (file.parent == null) {
+    fun ensureFolderStructureExists(outputFile: File) {
+        if (outputFile.parent == null) {
             return
         }
-        if (file.isDirectory) {
-            throw IllegalArgumentException("outputFile cannot be a directory: $file")
-        }
-        val parentPath = File(file.parent)
-        if (!parentPath.exists() && !parentPath.mkdirs()) {
-            throw IllegalArgumentException("Error creating directory: $parentPath")
+        if (!outputFile.isDirectory) {
+            val parentPath = File(outputFile.parent)
+            check(!(!parentPath.exists() && !parentPath.mkdirs())) { "Error creating directory: $parentPath" }
+        } else {
+            throw IllegalArgumentException("outputFile cannot be a directory: $outputFile")
         }
     }
 
@@ -31,7 +30,7 @@ object FileUtils {
     }
 
     fun createFullPath(vararg elements: String?): String {
-        return elements.filterNotNull().fold(File("")) { acc, it -> File(acc, it) }.absolutePath
+        return elements.filterNotNull().fold(File("")) { acc, it -> File(acc, it) }.name
         /*
                 val fullPath = StringBuilder()
                 for (i in 0 until dirsAndFilename.size - 1) {

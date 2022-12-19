@@ -9,12 +9,12 @@ class Replacement {
     var isUnescape = false
     var token: String
         get() {
-            val newToken = if (isUnescape) unescape(token) else token
+            val newToken = if (isUnescape) unescape(field) else field
             return delimiter?.apply(newToken) ?: newToken
         }
     var value: String
         get() {
-            return if (isUnescape) unescape(value) else value
+            return if (isUnescape) unescape(field) else field
         }
 
     var encoding: Charset
