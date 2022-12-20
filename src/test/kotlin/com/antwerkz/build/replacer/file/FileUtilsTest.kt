@@ -7,12 +7,10 @@ import java.io.FileWriter
 import java.util.UUID
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.CoreMatchers.startsWith
 import org.hamcrest.MatcherAssert.assertThat
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertThrows
 import org.testng.Assert.assertTrue
-import org.testng.Assert.fail
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
