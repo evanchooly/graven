@@ -102,16 +102,6 @@ class FileUtilsTest {
     }
 
     @Test
-    fun shouldThrowExceptionWhenCannotCreateDir() {
-        try {
-            FileUtils.ensureFolderStructureExists(File(".../f*\"%e\$d/a%*bc$:\\te\"st"))
-            fail("Should have thrown Error")
-        } catch (e: IllegalStateException) {
-            assertThat(e.message, startsWith("Error creating directory"))
-        }
-    }
-
-    @Test
     fun shouldReturnTrueWhenAbsolutePathFilename() {
         assertFalse(FileUtils.isAbsolutePath("target/somedir/somepath"))
         assertTrue(FileUtils.isAbsolutePath(File("target/somefile").absolutePath))
