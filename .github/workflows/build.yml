@@ -17,7 +17,7 @@ jobs:
       - Build
     strategy:
       matrix:
-        gradle: [ 7.6, 7.3, 6.9.1 ]
+        gradle: [ 7.6 ] #, 7.3, 6.9.1 ]
     uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
       reuseBuild: true
