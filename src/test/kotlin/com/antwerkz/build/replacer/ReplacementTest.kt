@@ -10,7 +10,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.testng.annotations.Test
 
 class ReplacementTest {
-    var delimiter = DelimiterBuilder()
     @Test
     private fun shouldReturnConstructorParameters() {
         val replacement = Replacement(TOKEN, VALUE)
