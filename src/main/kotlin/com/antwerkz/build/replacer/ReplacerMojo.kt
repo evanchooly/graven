@@ -153,8 +153,8 @@ open class ReplacerMojo : AbstractMojo() {
      * default Maven basedir.
      *
      */
-    @Parameter
-    var basedir = ""
+    @Parameter(defaultValue = ".")
+    var basedir = "."
 
     /**
      * List of standard Java regular expression Pattern flags (see Java Doc). Must contain one or

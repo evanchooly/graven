@@ -8,11 +8,16 @@ import org.hamcrest.CoreMatchers.endsWith
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 class OutputFilenameBuilderTest {
-    var mojo = ReplacerMojo()
+    lateinit var mojo : ReplacerMojo
 
+    @BeforeMethod
+    fun setUpMojo() {
+        mojo = ReplacerMojo()
+    }
     @Test
     fun shouldReturnFullPathWithAllOutputFileParams() {
         mojo.outputDir = OUTPUT_DIR
@@ -82,7 +87,7 @@ class OutputFilenameBuilderTest {
     fun shouldPrefixBasedirWhenNotUsingOutputBasedir() {
         mojo.outputDir = OUTPUT_DIR
         val output = buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(createFullPath(BASE_DIR, OUTPUT_DIR, "input")))
+        assertThat(output, equalTo(createFullPath(BASE_DIR, OUTPUT_DIR, INPUT_FILE)))
     }
 
     @Test
@@ -90,7 +95,7 @@ class OutputFilenameBuilderTest {
         mojo.outputBasedir = OUTPUT_BASE_DIR
         mojo.outputDir = OUTPUT_DIR
         val output = buildFrom(INPUT_FILE, mojo)
-        assertThat(output, equalTo(createFullPath(OUTPUT_BASE_DIR, OUTPUT_DIR, "input")))
+        assertThat(output, equalTo(createFullPath(OUTPUT_BASE_DIR, OUTPUT_DIR, INPUT_FILE)))
     }
 
     @Test

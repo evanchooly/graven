@@ -38,5 +38,5 @@ object OutputFilenameBuilder {
         }
     }
 
-    private fun stripPath(inputFilename: String): String = File(inputFilename).name
+    private fun stripPath(inputFilename: String) = File(inputFilename).name
 }

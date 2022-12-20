@@ -30,19 +30,9 @@ object FileUtils {
     }
 
     fun createFullPath(vararg elements: String?): String {
-        return elements.filterNotNull().fold(File("")) { acc, it -> File(acc, it) }.name
-        /*
-                val fullPath = StringBuilder()
-                for (i in 0 until dirsAndFilename.size - 1) {
-                    if (dirsAndFilename[i]?.isNotBlank() == true) {
-                        fullPath.append(dirsAndFilename[i])
-                        fullPath.append(File.separator)
-                    }
-                }
-                val last = dirsAndFilename[dirsAndFilename.size - 1]
-                fullPath.append(last)
-                return file
-        */
+        return elements
+            .filterNotNull()
+            .joinToString(File.separator)
     }
 
     fun isAbsolutePath(file: String): Boolean {

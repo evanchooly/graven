@@ -19,13 +19,6 @@ class ReplacementTest {
     }
 
     @Test
-    fun shouldApplyToTokenDelimiterIfExists() {
-        val replacement = Replacement(TOKEN, VALUE).withDelimiter(DelimiterBuilder())
-        assertThat(replacement.token, equalTo("new token"))
-        assertThat(replacement.value, equalTo(VALUE))
-    }
-
-    @Test
     fun shouldUseEscapedTokensAndValues() {
         val replacement = Replacement(UNESCAPED, UNESCAPED, unescape = true)
         assertThat(replacement.token, equalTo(ESCAPED))

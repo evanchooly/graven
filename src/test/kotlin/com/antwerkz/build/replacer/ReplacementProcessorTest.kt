@@ -26,7 +26,7 @@ class ReplacementProcessorTest {
         //                `when`(TokenReplacer.replace(CONTENT, replacement, true,
         // REGEX_FLAGS)).thenReturn(NEW_CONTENT)
         ReplacementProcessor.replace(
-            listOf(replacement),
+            listOf(Replacement("^", "new ")),
             true,
             FILE,
             OUTPUT_FILE,
@@ -38,10 +38,8 @@ class ReplacementProcessorTest {
 
     @Test
     fun shouldWriteReplacedNonRegexTextToFile() {
-        //                `when`(TokenReplacer.replace(CONTENT, replacement, false,
-        // REGEX_FLAGS)).thenReturn(NEW_CONTENT)
         ReplacementProcessor.replace(
-            listOf(replacement),
+            listOf(Replacement("content", "new content")),
             false,
             FILE,
             OUTPUT_FILE,

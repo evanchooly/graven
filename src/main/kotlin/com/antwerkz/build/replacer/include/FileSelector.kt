@@ -5,7 +5,7 @@ import org.codehaus.plexus.util.DirectoryScanner
 
 object FileSelector {
     fun listIncludes(
-        basedir: String = "",
+        basedir: String = "/",
         includes: List<String> = emptyList(),
         excludes: List<String> = emptyList()
     ): List<String> {
@@ -14,9 +14,7 @@ object FileSelector {
         }
         val directoryScanner = DirectoryScanner()
         directoryScanner.addDefaultExcludes()
-        if (basedir.isNotBlank()) {
-            directoryScanner.basedir = File(basedir)
-        }
+        directoryScanner.basedir = File(basedir)
         directoryScanner.setIncludes(includes.toTypedArray())
         directoryScanner.setExcludes(excludes.toTypedArray())
         directoryScanner.scan()
