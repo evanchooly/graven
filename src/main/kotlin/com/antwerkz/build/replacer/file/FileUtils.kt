@@ -14,7 +14,9 @@ object FileUtils {
         }
         if (!outputFile.isDirectory) {
             val parentPath = File(outputFile.parent)
-            check(!(!parentPath.exists() && !parentPath.mkdirs())) { "Error creating directory: $parentPath" }
+            check(!(!parentPath.exists() && !parentPath.mkdirs())) {
+                "Error creating directory: $parentPath"
+            }
         } else {
             throw IllegalArgumentException("outputFile cannot be a directory: $outputFile")
         }
@@ -30,9 +32,7 @@ object FileUtils {
     }
 
     fun createFullPath(vararg elements: String?): String {
-        return elements
-            .filterNotNull()
-            .joinToString(File.separator)
+        return elements.filterNotNull().joinToString(File.separator)
     }
 
     fun isAbsolutePath(file: String): Boolean {

@@ -172,10 +172,16 @@ class ReplacerMojoIntegrationTest {
         mojo.isUnescape = true
         mojo.execute()
         val results: String = File(filenameAndPath).readText()
-        assertThat(results, equalTo("""
+        assertThat(
+            results,
+            equalTo(
+                """
     $VALUE
     987
-    """.trimIndent()))
+    """
+                    .trimIndent()
+            )
+        )
         logger.verify().info("Replacement run on 1 file.")
     }
 

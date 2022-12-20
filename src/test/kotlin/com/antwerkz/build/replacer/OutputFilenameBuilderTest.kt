@@ -12,7 +12,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 class OutputFilenameBuilderTest {
-    lateinit var mojo : ReplacerMojo
+    lateinit var mojo: ReplacerMojo
 
     @BeforeMethod
     fun setUpMojo() {

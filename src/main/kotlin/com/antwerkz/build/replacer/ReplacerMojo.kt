@@ -25,116 +25,90 @@ open class ReplacerMojo : AbstractMojo() {
     /**
      * File to check and replace tokens. Path to single file to replace tokens in. The file must be
      * text (ascii). Based on current execution path.
-     *
      */
-    @Parameter
-    var file: String? = null
+    @Parameter var file: String? = null
 
     /**
      * List of files to include for multiple (or single) replacement. In Ant format (*\/directory/
      * **.properties) Cannot use with outputFile.
-     *
      */
-    @Parameter
-    var includes: MutableList<String> = ArrayList()
+    @Parameter var includes: MutableList<String> = ArrayList()
 
     /**
      * List of files to exclude for multiple (or single) replacement. In Ant format (*\/directory/
      * **.properties) Cannot use with outputFile.
-     *
      */
-    @Parameter
-    var excludes: MutableList<String> = ArrayList()
+    @Parameter var excludes: MutableList<String> = ArrayList()
 
     /**
      * Comma separated list of includes. This is split up and used the same way a array of includes
      * would be. In Ant format (*\/directory/ **.properties). Files not found are ignored by
      * default.
-     *
      */
-    @Parameter
-    var filesToInclude: String? = null
+    @Parameter var filesToInclude: String? = null
 
     /**
      * List of comma separated files to exclude (must have some includes) for multiple (or single)
      * replacement. This is split up and used the same way a array of excludes would be. In Ant
      * format (**\/directory/do-not-replace.properties). The files replaced will be derived from the
      * list of includes and excludes.
-     *
      */
-    @Parameter
-    var filesToExclude: String? = null
+    @Parameter var filesToExclude: String? = null
 
     /**
      * Token to replace. The text to replace within the given file. This may or may not be a regular
      * expression (see regex notes above).
-     *
      */
-    @Parameter
-    var token: String? = null
+    @Parameter var token: String? = null
 
     /**
      * Token file containing a token to be replaced in the target file/s. May be multiple words or
      * lines. This is useful if you do not wish to expose the token within your pom or the token is
      * long.
-     *
      */
-    @Parameter
-    var tokenFile: String? = null
+    @Parameter var tokenFile: String? = null
 
     /**
      * Ignore missing target file. Use only with file configuration (not includes etc). Set to true
      * to not fail build if the file is not found. First checks if file exists and exits without
      * attempting to replace anything.
-     *
      */
-    @Parameter
-    var ignoreMissingFile = false
+    @Parameter var ignoreMissingFile = false
 
     /**
      * Value to replace token with. The text to be written over any found tokens. If no value is
      * given, the tokens found are replaced with an empty string (effectively removing any tokens
      * found). You can also reference grouped regex matches made in the token here by $1, $2, etc.
-     *
      */
-    @Parameter
-    var value: String? = null
+    @Parameter var value: String? = null
 
     /**
      * A file containing a value to replace the given token with. May be multiple words or lines.
      * This is useful if you do not wish to expose the value within your pom or the value is long.
-     *
      */
-    @Parameter
-    var valueFile: String? = null
+    @Parameter var valueFile: String? = null
 
     /**
      * Indicates if the token should be located with regular expressions. This should be set to
      * false if the token contains regex characters which may miss the desired tokens or even
      * replace the wrong tokens.
-     *
      */
-    @Parameter
-    var regex = true
+    @Parameter var regex = true
 
     /**
      * Output to another file. The input file is read and the final output (after replacing tokens)
      * is written to this file. The path and file are created if it does not exist. If it does
      * exist, the contents are overwritten. You should not use outputFile when using a list of
      * includes.
-     *
      */
-    @Parameter
-    var outputFile: String? = null
+    @Parameter var outputFile: String? = null
 
     /**
      * Output to another dir. Destination directory relative to the execution directory for all
      * replaced files to be written to. Use with outputDir to have files written to a specific base
      * location.
-     *
      */
-    @Parameter
-    var outputDir: String? = null
+    @Parameter var outputDir: String? = null
 
     /**
      * Map of tokens and respective values to replace with. A file containing tokens and respective
@@ -142,102 +116,70 @@ open class ReplacerMojo : AbstractMojo() {
      * containing different tokens to have replaced. Each token/value pair should be in the format:
      * "token=value" (without quotations). If your token contains ='s you must escape the =
      * character to \=. e.g. tok\=en=value
-     *
      */
-    @Parameter
-    var tokenValueMap: String? = null
+    @Parameter var tokenValueMap: String? = null
 
     /**
      * Optional base directory for each file to replace. Path to base relative files for
      * replacements from. This feature is useful for multi-module projects. Default "." which is the
      * default Maven basedir.
-     *
      */
-    @Parameter(defaultValue = ".")
-    var basedir = "."
+    @Parameter(defaultValue = ".") var basedir = "."
 
     /**
      * List of standard Java regular expression Pattern flags (see Java Doc). Must contain one or
-     * more of:
-     * <ul>
-     * <li>CANON_EQ
-     * <li>CASE_INSENSITIVE
-     * <li>COMMENTS
-     * <li>DOTALL
-     * <li>LITERAL
-     * <li>MULTILINE
-     * <li>UNICODE_CASE
-     * <li>UNIX_LINES
-     * </ul>
-     *
+     * more of: <ul> <li>CANON_EQ <li>CASE_INSENSITIVE <li>COMMENTS <li>DOTALL <li>LITERAL
+     * <li>MULTILINE <li>UNICODE_CASE <li>UNIX_LINES </ul>
      */
-    @Parameter
-    var regexFlags: List<String> = emptyList()
+    @Parameter var regexFlags: List<String> = emptyList()
 
     /**
      * List of replacements with token/value pairs. Each replacement element to contain sub-elements
      * as token/value pairs. Each token within the given file will be replaced by it's respective
      * value.
-     *
      */
-    @Parameter(required = true)
-    lateinit var replacements: List<Replacement>
+    @Parameter(required = true) lateinit var replacements: List<Replacement>
 
     /**
      * Comments enabled in the tokenValueMapFile. Comment lines start with '#'. If your token starts
      * with an '#' then you must supply the commentsEnabled parameter and with a value of false.
      * Default is true.
      */
-    @Parameter(defaultValue = "true")
-    var isCommentsEnabled = true
+    @Parameter(defaultValue = "true") var isCommentsEnabled = true
 
-    /**
-     * Skip running this plugin. Default is false.
-     *
-     */
-    @Parameter(defaultValue = "false")
-    var isSkip = false
+    /** Skip running this plugin. Default is false. */
+    @Parameter(defaultValue = "false") var isSkip = false
 
     /**
      * Base directory (appended) to use for outputDir. Having this existing but blank will cause the
      * outputDir to be based on the execution directory.
-     *
      */
-    @Parameter
-    var outputBasedir: String? = null
+    @Parameter var outputBasedir: String? = null
 
     /**
      * Parent directory is preserved when replacing files found from includes and being written to
      * an outputDir. Default is true.
-     *
      */
-    @Parameter(defaultValue = "true")
-    var isPreserveDir = true
+    @Parameter(defaultValue = "true") var isPreserveDir = true
 
     /**
      * Stops printing a summary of files that have had replacements performed upon them when true.
      * Default is false.
-     *
      */
-    @Parameter(defaultValue = "false")
-    var quiet = false
+    @Parameter(defaultValue = "false") var quiet = false
 
     /**
      * Unescape tokens and values to Java format. e.g. token\n is unescaped to token(carriage
      * return). Default is false.
-     *
      */
-    @Parameter(defaultValue = "false")
-    var isUnescape = false
+    @Parameter(defaultValue = "false") var isUnescape = false
 
     /**
      * Add a list of delimiters which are added on either side of tokens to match against. You may
      * also use the '' character to place the token in the desired location for matching. e.g. @
      * would match @token@. e.g. ${} would match ${token}.
-     *
      */
-    @Parameter
-    var delimiters: List<String> = ArrayList()
+    @Parameter var delimiters: List<String> = ArrayList()
 
     /**
      * Variable tokenValueMap. Same as the tokenValueMap but can be an include configuration rather
@@ -245,10 +187,8 @@ open class ReplacerMojo : AbstractMojo() {
      * pom. This parameter may contain multiple entries to support a single file containing
      * different tokens to have replaced. Format is comma separated. e.g. token=value,token2=value2
      * Comments are not supported.
-     *
      */
-    @Parameter
-    var variableTokenValueMap: String? = null
+    @Parameter var variableTokenValueMap: String? = null
 
     /**
      * Ignore any errors produced by this plugin such as files not being found and continue with the
@@ -259,8 +199,7 @@ open class ReplacerMojo : AbstractMojo() {
      *
      * @parameter default-value="false"
      */
-    @Parameter(defaultValue = "false")
-    var isIgnoreErrors = false
+    @Parameter(defaultValue = "false") var isIgnoreErrors = false
 
     /**
      * File encoding used when reading and writing files. Default system encoding used when not
@@ -268,33 +207,24 @@ open class ReplacerMojo : AbstractMojo() {
      *
      * @parameter default-value="${project.build.sourceEncoding}"
      */
-    @Parameter(defaultValue = "\${project.build.sourceEncoding}")
-    var encoding: String = "UTF-8"
+    @Parameter(defaultValue = "\${project.build.sourceEncoding}") var encoding: String = "UTF-8"
 
     /**
      * Regular expression is run on an input file's name to create the output file with. Must be
      * used in conjunction with outputFilePattern.
-     *
      */
-    @Parameter
-    var inputFilePattern: String? = null
+    @Parameter var inputFilePattern: String? = null
 
     /**
      * Regular expression groups from inputFilePattern are used in this pattern to create an output
      * file per input file. Must be used in conjunction with inputFilePattern.
      *
      * The parameter outputFile is ignored when outputFilePattern is used.
-     *
      */
-    @Parameter
-    var outputFilePattern: String? = null
+    @Parameter var outputFilePattern: String? = null
 
-    /**
-     * Set a maximum number of files which can be replaced per execution.
-     *
-     */
-    @Parameter
-    var maxReplacements = Int.MAX_VALUE
+    /** Set a maximum number of files which can be replaced per execution. */
+    @Parameter var maxReplacements = Int.MAX_VALUE
 
     override fun execute() {
         if (!::replacements.isInitialized) {
