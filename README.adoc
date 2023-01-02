@@ -1,8 +1,8 @@
-= The Gradle Plugin Maven Plugin
+= Graven: The Gradle Maven Plugin
 
-This sounds like an odd beast because it is.  It might even be completely unwarranted!  So what problem is it trying to solve?  Let's say
+This sounds like an odd beast because it is.  It might even be completely unwarranted.  So what problem is it trying to solve?  Let's say
 you have a project and in that project is a maven plugin.  Because you're a kind soul, you also want to offer a gradle plugin but you
-don't really want to deal with two different builds.  Enter The Gradle Plugin Maven Plugin.
+don't really want to deal with two different builds.  Enter the graven maven plugin.
 
 In an ideal world, gradle resources would be in a repo somewhere fetchable and you could just add your dependencies to your pom.xml and
 move on with life.  If they exist somewhere I haven't found them.  What this plugin does for you is bridge the lifecycles of maven's

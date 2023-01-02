@@ -4,9 +4,16 @@ import java.io.File
 import java.nio.charset.Charset
 import org.apache.commons.text.StringEscapeUtils
 
-class Replacement {
+class Replacement(
+    token: String = "",
+    value: String = "",
+    tokenFile: File? = null,
+    valueFile: File? = null,
+    unescape: Boolean = false,
+    var encoding: Charset = Charset.forName("UTF-8")
+) {
     private var delimiter: DelimiterBuilder? = null
-    var isUnescape = false
+    var isUnescape = unescape
     var token: String
         get() {
             val newToken = if (isUnescape) unescape(field) else field
@@ -17,19 +24,7 @@ class Replacement {
             return if (isUnescape) unescape(field) else field
         }
 
-    var encoding: Charset
-
-    constructor(
-        token: String = "",
-        value: String = "",
-        tokenFile: File? = null,
-        valueFile: File? = null,
-        unescape: Boolean = false,
-        encoding: Charset = Charset.forName("UTF-8")
-    ) {
-        isUnescape = unescape
-        this.encoding = encoding
-
+    init {
         this.token = tokenFile?.readText(encoding) ?: token
         this.value = valueFile?.readText(encoding) ?: value
     }
