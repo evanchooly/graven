@@ -156,7 +156,7 @@ class TokenValueMapFactoryTest {
     }
 
     companion object {
-        private const val FILENAME = "some file"
+        private const val FILENAME = "target/some file"
         private const val COMMENTS_ENABLED = true
         private const val COMMENTS_DISABLED = false
     }
