@@ -23,9 +23,7 @@ class GravenMojoTest {
             it.artifactId = "jackson-databind"
             it.version = "2.14.1"
         }))
-        val replace =
-            GravenMojo.replace(deps, tests.input)
-        assertEquals(replace, tests.target)
+        assertEquals(GravenMojo.replace(deps, tests.input), tests.target)
     }
 
     @DataProvider(name = "versions")

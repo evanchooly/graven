@@ -1,8 +1,5 @@
 package com.antwerkz.build
 
-import com.antwerkz.expression.RegularExpression.Companion.capture
-import com.antwerkz.expression.RegularExpression.Companion.oneOrMore
-import com.antwerkz.expression.toRegex
 import java.io.File
 import java.nio.charset.Charset
 import org.apache.maven.model.Dependency
@@ -18,14 +15,18 @@ import org.codehaus.plexus.logging.Logger
 class GravenMojo : AbstractMojo() {
     companion object {
         fun replace(groups: Map<String, Dependency>, input: String): String {
-            return versionMatcher.matchEntire(input)?.let {
-                val groupId = it.groups["groupId"]!!.value
-                val artifactId = it.groups["artifactId"]!!.value
-                val dependency = groups["${groupId}:${artifactId}"]
-                dependency?.let {
-                    input.replace(versionMatcher, "$1(\"$2:$3:${it.version}\")")
+            Replacers.values()
+                .forEach { factory: Replacers ->
+                    val replacer = factory.create(input)
+                    if (replacer.matches()) {
+                        val dependency = groups["${replacer.groupId}:${replacer.artifactId}"]
+                        if (dependency != null) {
+                            return replacer.replace(dependency)
+                        }
+                    }
                 }
-            } ?: input
+
+            return input
         }
         fun groupDeps(dependencies: List<Dependency>): Map<String, Dependency> {
             val groups: Map<String, Dependency> = dependencies
@@ -36,40 +37,6 @@ class GravenMojo : AbstractMojo() {
             return groups
         }
 
-        val gavCharacters = //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-"
-            oneOrMore {
-                anyOf {
-                    range('a', 'z')
-                        .range('A', 'Z')
-                        .char('-')
-                        .char('.')
-                }
-            }
-        private val versionMatcher =
-            capture {
-                oneOrMore {
-                    anyOf {
-                        range('a', 'z')
-                            .range('A', 'Z')
-                            .whitespaceChar()
-                    }
-                }
-            }
-                .string("(\"")
-                .namedCapture("groupId") { subexpression(gavCharacters) }
-                .char(':')
-                .namedCapture("artifactId") { subexpression(gavCharacters) }
-                .char(':')
-                .capture {
-                    oneOrMore { digit() }
-                        .char('.')
-                        .oneOrMore { digit() }
-                        .char('.')
-                        .oneOrMore { digit() }
-                        .zeroOrMoreLazy { anyChar() }
-                }
-                .string("\")")
-                .toRegex()
     }
 
     @Component
@@ -84,11 +51,11 @@ class GravenMojo : AbstractMojo() {
         if (!gradleBuild.exists()) {
             gradleBuild = File("build.gradle.kts")
         }
-        val lines = gradleBuild.readLines(Charset.defaultCharset())
-            .map { line: String ->
-                replace(groups, line)
-            }
 
-        gradleBuild.writeText(lines.joinToString("\n"))
+        gradleBuild.writeText(
+            gradleBuild.readLines(Charset.defaultCharset())
+                .joinToString("\n") { line: String -> replace(groups, line)
+            }
+        )
     }
 }
