@@ -27,6 +27,7 @@ class VersionReplacementTest : MavenTester() {
 
         assertTrue(lines.any { it.contains("implementation(\"org.apache.maven:maven-model:2.3.1\")") })
         assertTrue(lines.any { it.contains("classpath(\"com.fasterxml.jackson.core:jackson-databind:2.14.1\")") })
+        assertTrue(lines.any { it.contains("kotlin(\"jvm\") version \"1.8.0\"") })
     }
 
     @Test
@@ -41,6 +42,7 @@ class VersionReplacementTest : MavenTester() {
 
         assertTrue(lines.any { it.contains("implementation('org.apache.maven:maven-model:2.3.1')") })
         assertTrue(lines.any { it.contains("classpath('com.fasterxml.jackson.core:jackson-databind:2.14.1')") })
+        assertTrue(lines.any { it.contains("kotlin('jvm') version '1.8.0'") })
     }
 
     private fun setupAndInvoke(testDir: File, params: Properties = Properties()): InvocationResult {

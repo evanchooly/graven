@@ -7,6 +7,10 @@
     <artifactId>dummy</artifactId>
     <version>dummy</version>
 
+    <properties>
+        <kotlin.version>1.8.0</kotlin.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -38,12 +42,8 @@
                     <filesToInclude>${project.basedir}/build.gradle.kts, ${project.basedir}/gradle.properties</filesToInclude>
                     <replacements>
                         <replacement>
-                            <token>(classpath\("org.apache.maven:maven-model.*)</token>
-                            <value>classpath("org.apache.maven:maven-model:${maven.version}")</value>
-                        </replacement>
-                        <replacement>
-                            <token>(kotlin\("jvm"\).*)</token>
-                            <value>kotlin("jvm") version "${kotlin.version}"</value>
+                            <pattern>(kotlin\('jvm'\).*)</pattern>
+                            <value>kotlin('jvm') version '${kotlin.version}'</value>
                         </replacement>
                     </replacements>
                 </configuration>
