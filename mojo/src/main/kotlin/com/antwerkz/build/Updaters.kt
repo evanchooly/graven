@@ -11,17 +11,16 @@ import org.apache.maven.model.Dependency
 enum class Updaters {
     DOUBLE_QUOTED_VERSIONS {
         override fun create(input: String): DepReplacer {
-            return object: DepReplacer(matcher("\""), input) {
+            return object : DepReplacer(matcher("\""), input) {
                 override fun replace(dependency: Dependency): String {
                     return input.replace(regex, "$1(\"$2:$3:${dependency.version}\")")
                 }
             }
         }
-
     },
     SINGLE_QUOTED_VERSIONS {
         override fun create(input: String): DepReplacer {
-            return object: DepReplacer(matcher("'"), input) {
+            return object : DepReplacer(matcher("'"), input) {
                 override fun replace(dependency: Dependency): String {
                     return input.replace(regex, "$1('$2:$3:${dependency.version}')")
                 }
@@ -30,18 +29,18 @@ enum class Updaters {
     },
     PROPERTY_DEFINITIONS {
         override fun create(input: String): DepReplacer {
-            return object: DepReplacer(propertyMatcher("\""), input) {
+            return object : DepReplacer(propertyMatcher("\""), input) {
                 override fun replace(dependency: Dependency): String {
                     return input.replace(regex, "$1 version \"$2\"")
                 }
             }
         }
     };
-//    GROOVY_PLUGINS,
-//    KOTLIN_PLUGINS
+    //    GROOVY_PLUGINS,
+    //    KOTLIN_PLUGINS
 
     abstract fun create(input: String): DepReplacer
-    abstract class DepReplacer(val regex: Regex, input: String ) {
+    abstract class DepReplacer(val regex: Regex, input: String) {
         val result = regex.matchEntire(input)
         val groupId: String? by lazy {
             try {
@@ -66,12 +65,7 @@ enum class Updaters {
 
 object UpdateValues {
     private val gavCharacters = oneOrMore {
-        anyOf {
-            range('a', 'z')
-                .range('A', 'Z')
-                .char('-')
-                .char('.')
-        }
+        anyOf { range('a', 'z').range('A', 'Z').char('-').char('.') }
     }
     private val versionCharacters =
         oneOrMore { digit() }
@@ -81,15 +75,7 @@ object UpdateValues {
             .oneOrMore { digit() }
             .zeroOrMoreLazy { anyChar() }
     fun matcher(quote: String): Regex {
-        return capture {
-            oneOrMore {
-                anyOf {
-                    range('a', 'z')
-                        .range('A', 'Z')
-                        .whitespaceChar()
-                }
-            }
-        }
+        return capture { oneOrMore { anyOf { range('a', 'z').range('A', 'Z').whitespaceChar() } } }
             .string("($quote")
             .namedCapture("groupId") { subexpression(gavCharacters) }
             .char(':')
@@ -99,10 +85,11 @@ object UpdateValues {
             .string("$quote)")
             .toRegex()
     }
-    fun propertyMatcher(quote: String) = oneOrMoreLazy { anyChar() }
-        .atLeast(1) { whitespaceChar() }
-        .char('=')
-        .atLeast(1) { whitespaceChar() }
-        .subexpression(versionCharacters)
-        .toRegex()
+    fun propertyMatcher(quote: String) =
+        oneOrMoreLazy { anyChar() }
+            .atLeast(1) { whitespaceChar() }
+            .char('=')
+            .atLeast(1) { whitespaceChar() }
+            .subexpression(versionCharacters)
+            .toRegex()
 }
