@@ -1,0 +1,3 @@
+package maven.projects.versionReplacements
+
+rootProject.name = "version-replacements"

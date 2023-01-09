@@ -37,7 +37,10 @@ class GravenMojo : AbstractMojo() {
     lateinit var project: MavenProject
 
     @Parameter
-    lateinit var replacements: List<RegexReplacement>
+    var replacements: List<RegexReplacement> = listOf()
+
+    @Parameter
+    var mappedProperties: List<MappedProperty> = listOf()
 
     @Parameter(defaultValue = "build.gradle, build.gradle.kts,gradle.properties,settings.gradle")
     lateinit var files: String
@@ -87,6 +90,8 @@ class RegexReplacement() {
         return "Replacement(pattern='$pattern', value='$value')"
     }
 }
+
+data class MappedProperty(var gradleProperty: String = "", var mavenProperty: String = "")
 
 fun List<Dependency>.groupDeps(): Map<String, Dependency> {
     return groupBy {
