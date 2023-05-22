@@ -3,12 +3,16 @@ name: Build Project
 on:
   push:
     branches-ignore:
-      - 'dependabot/*'
+      - 'dependabot/**'
   workflow_dispatch:
 
 jobs:
+  CodeAudits:
+    uses: evanchooly/workflows/.github/workflows/code-audits.yml@master
+
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
+    needs: CodeAudits
     with:
       saveBuild: true
 
