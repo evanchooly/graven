@@ -62,10 +62,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.antwerkz.super-expressive</groupId>
             <artifactId>super-expressive</artifactId>
             <version>0.2.0</version>

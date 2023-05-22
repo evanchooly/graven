@@ -114,7 +114,6 @@ open class MavenTester {
                     return super.execute(request)
                 }
             }
-        // C:\ProgramData\chocolatey\lib\maven\apache-maven-3.8.6\bin
         invoker.mavenHome = mavenHome
         invoker.workingDirectory = root
         invoker.localRepositoryDirectory =

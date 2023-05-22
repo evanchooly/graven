@@ -13,19 +13,25 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.14.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.1-jre</version>
+        </dependency>
     </dependencies>
 
     <properties>
+        <guava.version>31.1-jre</guava.version>
         <kotlin.version>1.8.0</kotlin.version>
+        <testng.version>7.8.0</testng.version>
     </properties>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${project.basedir}</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>com.antwerkz.build</groupId>
@@ -39,7 +45,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <files>${project.basedir}/build.gradle.kts, ${project.basedir}/gradle.properties</files>
                     <replacements>
                         <replacement>
                             <pattern>(kotlin\("jvm"\).*)</pattern>

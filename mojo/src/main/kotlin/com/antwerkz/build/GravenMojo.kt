@@ -1,7 +1,10 @@
 package com.antwerkz.build
 
+import com.antwerkz.expression.RegularExpression
+import com.antwerkz.expression.toRegex
 import java.io.File
 import java.nio.charset.Charset
+import java.util.Properties
 import org.apache.maven.model.Dependency
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.Component
@@ -14,17 +17,34 @@ import org.codehaus.plexus.logging.Logger
 @Mojo(name = "graven", defaultPhase = PROCESS_SOURCES)
 class GravenMojo : AbstractMojo() {
     companion object {
+        val PROPERTY_MATCHER =
+            RegularExpression.startOfInput()
+                .zeroOrMore { char(' ') }
+                .anyOfChars(":=")
+                .zeroOrMore { char(' ') }
+                .oneOrMore { anyChar() }
+                .toRegex()
+
         fun replace(groups: Map<String, Dependency>, input: String): String {
             Updaters.values().forEach { factory: Updaters ->
                 val replacer = factory.create(input)
                 if (replacer.matches()) {
-                    val dependency = groups["${replacer.groupId}:${replacer.artifactId}"]
-                    dependency?.let { dep ->
+                    groups["${replacer.groupId}:${replacer.artifactId}"]?.let { dep ->
                         return replacer.replace(dep)
                     }
                 }
             }
 
+            return input
+        }
+
+        private fun replace(properties: Properties, input: String): String {
+            properties.entries.forEach { (k, v) ->
+                val key = k.toString()
+                if (input.startsWith(key) && input.removePrefix(key).matches(PROPERTY_MATCHER)) {
+                    return "$key=$v"
+                }
+            }
             return input
         }
     }
@@ -38,11 +58,13 @@ class GravenMojo : AbstractMojo() {
 
     @Parameter var mappedProperties: List<MappedProperty> = listOf()
 
-    @Parameter(defaultValue = "build.gradle, build.gradle.kts,gradle.properties,settings.gradle")
+    @Parameter(defaultValue = "build.gradle,build.gradle.kts,gradle.properties,settings.gradle")
     lateinit var files: String
 
     override fun execute() {
         val dependencies = project.dependencies.groupDeps()
+        val properties = project.properties
+
         files
             .split(",")
             .map { it.trim() }
@@ -54,6 +76,7 @@ class GravenMojo : AbstractMojo() {
                         file
                             .readLines(Charset.defaultCharset())
                             .map { line: String -> replace(dependencies, line) }
+                            .map { line: String -> replace(properties, line) }
                             .map {
                                 var line = it
                                 replacements.forEach { replacement ->
