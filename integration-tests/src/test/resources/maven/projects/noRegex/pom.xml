@@ -20,12 +20,6 @@
     </properties>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${project.basedir}</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>com.antwerkz.build</groupId>
