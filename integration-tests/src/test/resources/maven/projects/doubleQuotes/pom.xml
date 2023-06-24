@@ -16,7 +16,7 @@
     </dependencies>
 
     <properties>
-        <kotlin.version>1.8.0</kotlin.version>
+        <kotlin.version>1.8.10</kotlin.version>
     </properties>
 
     <build>
@@ -33,6 +33,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <gradleVersion>7.6.1</gradleVersion>
                     <files>${project.basedir}/build.gradle.kts, ${project.basedir}/gradle.properties</files>
                     <replacements>
                         <replacement>

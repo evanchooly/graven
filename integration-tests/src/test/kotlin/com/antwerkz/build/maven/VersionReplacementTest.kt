@@ -24,15 +24,13 @@ class VersionReplacementTest : MavenTester() {
         assertEquals(result.exitCode, 0)
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
-        assertTrue(
-            lines.any { it.contains("implementation(\"org.apache.maven:maven-model:2.3.1\")") }
-        )
+        assertTrue(lines.any { it.contains("classpath(\"org.apache.maven:maven-model:2.3.1\")") })
         assertTrue(
             lines.any {
                 it.contains("classpath(\"com.fasterxml.jackson.core:jackson-databind:2.14.1\")")
             }
         )
-        assertTrue(lines.any { it.contains("kotlin(\"jvm\") version \"1.8.0\"") })
+        assertTrue(lines.any { it.contains("kotlin(\"jvm\") version \"1.8.10\"") })
     }
 
     @Test
@@ -44,9 +42,7 @@ class VersionReplacementTest : MavenTester() {
         assertEquals(result.exitCode, 0)
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
-        assertTrue(
-            lines.any { it.contains("implementation(\"org.apache.maven:maven-model:2.3.1\")") }
-        )
+        assertTrue(lines.any { it.contains("classpath(\"org.apache.maven:maven-model:2.3.1\")") })
         assertTrue(
             lines.any {
                 it.contains("classpath(\"com.fasterxml.jackson.core:jackson-databind:2.14.1\")")
@@ -85,7 +81,7 @@ class VersionReplacementTest : MavenTester() {
                 it.contains("classpath('com.fasterxml.jackson.core:jackson-databind:2.14.1')")
             }
         )
-        assertTrue(lines.any { it.contains("kotlin('jvm') version '1.8.0'") })
+        assertTrue(lines.any { it.contains("kotlin('jvm') version '1.8.10'") })
     }
 
     private fun setupAndInvoke(testDir: File, params: Properties = Properties()): InvocationResult {

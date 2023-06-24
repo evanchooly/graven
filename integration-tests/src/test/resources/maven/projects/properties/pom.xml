@@ -27,7 +27,7 @@
 
     <properties>
         <guava.version>31.1-jre</guava.version>
-        <kotlin.version>1.8.0</kotlin.version>
+        <kotlin.version>1.8.10</kotlin.version>
         <testng.version>7.8.0</testng.version>
     </properties>
 

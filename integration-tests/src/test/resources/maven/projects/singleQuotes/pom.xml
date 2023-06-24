@@ -8,7 +8,7 @@
     <version>infinity</version>
 
     <properties>
-        <kotlin.version>1.8.0</kotlin.version>
+        <kotlin.version>1.8.10</kotlin.version>
     </properties>
 
     <dependencies>

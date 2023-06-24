@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        implementation("org.apache.maven:maven-model:2.3.1")
+        classpath("org.apache.maven:maven-model:2.3.1")
         classpath("com.fasterxml.jackson.core:jackson-databind:1.0.0")
     }
 }

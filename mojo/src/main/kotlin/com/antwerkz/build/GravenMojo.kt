@@ -61,10 +61,12 @@ class GravenMojo : AbstractMojo() {
     @Parameter(defaultValue = "build.gradle,build.gradle.kts,gradle.properties,settings.gradle")
     lateinit var files: String
 
+    @Parameter(defaultValue = "8.1.1") lateinit var gradleVersion: String
+
     override fun execute() {
         val dependencies = project.dependencies.groupDeps()
         val properties = project.properties
-
+        updateGradleWrapper()
         files
             .split(",")
             .map { it.trim() }
@@ -88,6 +90,23 @@ class GravenMojo : AbstractMojo() {
                     )
                 }
             }
+    }
+
+    private fun updateGradleWrapper() {
+        val file = File("gradle/wrapper/gradle-wrapper.properties")
+
+        file.writeText(
+            file
+                .readLines(Charset.defaultCharset())
+                .map { line: String ->
+                    if (line.startsWith("distributionUrl=", ignoreCase = true)) {
+                        """distributionUrl=https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"""
+                    } else {
+                        line
+                    }
+                }
+                .joinToString("\n")
+        )
     }
 }
 
