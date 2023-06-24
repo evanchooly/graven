@@ -6,7 +6,7 @@ buildscript {
 }
 
 plugins {
-    id("dev.morphia.critter") version "${findProperty("morphia.version")}"
+    id("dev.morphia.critter") version "${findProperty("critter.version")}"
     kotlin("jvm") version "1.6.0"
     `maven-publish`
 }
@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.morphia.morphia:morphia-core:${findProperty("morphia.version")}")
+    implementation("dev.morphia.morphia:morphia-core:1.2.3")
     testImplementation("org.testng:testng:${findProperty("testng.version")}")
     testImplementation("org.testcontainers:mongodb:${findProperty("testcontainers.version")}")
 }

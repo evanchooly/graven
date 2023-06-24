@@ -24,7 +24,7 @@ class VersionReplacementTest : MavenTester() {
         assertEquals(result.exitCode, 0)
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
-        assertTrue(lines.any { it.contains("classpath(\"org.apache.maven:maven-model:2.3.1\")") })
+        assertTrue(lines.any { it.contains("classpath(\"org.apache.maven:maven-model:3.9.1\")") })
         assertTrue(
             lines.any {
                 it.contains("classpath(\"com.fasterxml.jackson.core:jackson-databind:2.14.1\")")

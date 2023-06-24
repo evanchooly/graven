@@ -7,17 +7,30 @@
     <artifactId>doubleQuotes</artifactId>
     <version>infinity</version>
 
+    <properties>
+        <kotlin.version>1.8.10</kotlin.version>
+        <morphia.version>2.3.5</morphia.version>
+        <critter.version>4.4.4</critter.version>
+        <maven.model>3.9.1</maven.model>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.14.1</version>
         </dependency>
+        <dependency>
+            <groupId>dev.morphia.morphia</groupId>
+            <artifactId>morphia-core</artifactId>
+            <version>${morphia.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>${maven.model}</version>
+        </dependency>
     </dependencies>
-
-    <properties>
-        <kotlin.version>1.8.10</kotlin.version>
-    </properties>
 
     <build>
         <plugins>
