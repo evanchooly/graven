@@ -64,6 +64,13 @@ class GravenMojo : AbstractMojo() {
     @Parameter(defaultValue = "8.1.1") lateinit var gradleVersion: String
 
     override fun execute() {
+        updateBuildFiles()
+        bindLifecycles()
+    }
+    private fun bindLifecycles() {
+    }
+
+    private fun updateBuildFiles() {
         val dependencies = project.dependencies.groupDeps()
         val properties = project.properties
         updateGradleWrapper()
