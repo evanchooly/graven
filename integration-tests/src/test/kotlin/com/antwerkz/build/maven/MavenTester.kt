@@ -2,18 +2,24 @@ package com.antwerkz.build.maven
 
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
+import java.io.PrintStream
 import java.lang.System.getProperty
 import java.nio.charset.StandardCharsets
+import java.util.Properties
 import java.util.function.Predicate
 import java.util.regex.Pattern
 import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
+import org.apache.maven.shared.invoker.DefaultInvocationRequest
 import org.apache.maven.shared.invoker.DefaultInvoker
 import org.apache.maven.shared.invoker.InvocationRequest
 import org.apache.maven.shared.invoker.InvocationResult
 import org.apache.maven.shared.invoker.Invoker
+import org.apache.maven.shared.invoker.InvokerLogger
+import org.apache.maven.shared.invoker.PrintStreamLogger
 import org.codehaus.plexus.util.FileUtils.copyDirectoryStructure
 import org.slf4j.LoggerFactory
 import org.testng.Assert.assertFalse
@@ -124,6 +130,35 @@ open class MavenTester {
         return invoker
     }
 
+    protected fun setupAndInvoke(
+        testDir: File,
+        goals: List<String> = listOf("test-compile"),
+        quiet: Boolean = false,
+        params: Properties = Properties()
+    ): Pair<InvocationResult, List<String>> {
+        val output = mutableListOf<String>()
+        val request: InvocationRequest = DefaultInvocationRequest()
+        request.isBatchMode = true
+        request.isDebug = false
+        request.isShowErrors = true
+        request.properties = params
+        request.setQuiet(quiet)
+        request.goals = goals
+        request.setOutputHandler { line -> output += line }
+
+        val invoker = initInvoker(testDir)
+        invoker.logger =
+            PrintStreamLogger(
+                PrintStream(
+                    FileOutputStream(File(testDir, "maven-${testDir.name}.log")),
+                    true,
+                    "UTF-8"
+                ),
+                InvokerLogger.DEBUG
+            )
+        return invoker.execute(request) to output
+    }
+
     val env: Map<String, String>
         get() {
             val env = mutableMapOf<String, String>()
@@ -131,3 +166,5 @@ open class MavenTester {
             return env
         }
 }
+
+fun List<String>.toLogFormat() = joinToString("\n", prefix = "\n")

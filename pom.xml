@@ -59,6 +59,11 @@
                 <version>${maven.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>zt-exec</artifactId>
+                <version>1.12</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

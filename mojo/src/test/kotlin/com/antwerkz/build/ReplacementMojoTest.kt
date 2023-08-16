@@ -5,7 +5,7 @@ import org.testng.Assert.assertEquals
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
-class GravenMojoTest {
+class ReplacementMojoTest {
     private val deps =
         listOf(
                 Dependency().also {
@@ -23,12 +23,12 @@ class GravenMojoTest {
 
     @Test(dataProvider = "versions")
     fun doubleQuoteVersionMatching(test: UpdateTest) {
-        assertEquals(GravenMojo.replace(deps, test.input), test.target, test.toString())
+        assertEquals(ReplacementMojo.replace(deps, test.input), test.target, test.toString())
     }
     @Test(dataProvider = "versions")
     fun singleQuoteVersionMatching(test: UpdateTest) {
         assertEquals(
-            GravenMojo.replace(deps, test.input.singleQuote()),
+            ReplacementMojo.replace(deps, test.input.singleQuote()),
             test.target.singleQuote(),
             test.toString()
         )

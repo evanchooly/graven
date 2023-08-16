@@ -28,7 +28,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>graven</goal>
+                            <goal>sync</goal>
                         </goals>
                     </execution>
                 </executions>

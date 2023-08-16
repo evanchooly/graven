@@ -1,27 +1,19 @@
 package com.antwerkz.build.maven
 
 import java.io.File
-import java.io.FileOutputStream
-import java.io.PrintStream
 import java.nio.charset.Charset
-import java.util.Properties
-import org.apache.maven.shared.invoker.DefaultInvocationRequest
-import org.apache.maven.shared.invoker.InvocationRequest
-import org.apache.maven.shared.invoker.InvocationResult
-import org.apache.maven.shared.invoker.InvokerLogger
-import org.apache.maven.shared.invoker.PrintStreamLogger
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
-class VersionReplacementTest : MavenTester() {
+class ReplacementMojoTest : MavenTester() {
     @Test
     fun doubleQuoteUpdates() {
         val testDir = initProject("projects/doubleQuotes")
 
-        val result = setupAndInvoke(testDir)
+        val (result, output) = setupAndInvoke(testDir)
 
-        assertEquals(result.exitCode, 0)
+        assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
         assertTrue(lines.any { it.contains("classpath(\"org.apache.maven:maven-model:3.9.1\")") })
@@ -37,9 +29,9 @@ class VersionReplacementTest : MavenTester() {
     fun noRegex() {
         val testDir = initProject("projects/noRegex")
 
-        val result = setupAndInvoke(testDir)
+        val (result, output) = setupAndInvoke(testDir)
 
-        assertEquals(result.exitCode, 0)
+        assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
         assertTrue(lines.any { it.contains("classpath(\"org.apache.maven:maven-model:2.3.1\")") })
@@ -55,7 +47,7 @@ class VersionReplacementTest : MavenTester() {
     fun properties() {
         val testDir = initProject("projects/properties")
 
-        val result = setupAndInvoke(testDir)
+        val (result, output) = setupAndInvoke(testDir)
 
         assertEquals(result.exitCode, 0)
         val lines = File(testDir, "gradle.properties").readLines(Charset.forName("UTF-8"))
@@ -68,9 +60,9 @@ class VersionReplacementTest : MavenTester() {
     fun singleQuoteUpdates() {
         val testDir = initProject("projects/singleQuotes")
 
-        val result = setupAndInvoke(testDir)
+        val (result, output) = setupAndInvoke(testDir)
 
-        assertEquals(result.exitCode, 0)
+        assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle").readLines(Charset.forName("UTF-8"))
 
         assertTrue(
@@ -82,27 +74,5 @@ class VersionReplacementTest : MavenTester() {
             }
         )
         assertTrue(lines.any { it.contains("kotlin('jvm') version '1.8.10'") })
-    }
-
-    private fun setupAndInvoke(testDir: File, params: Properties = Properties()): InvocationResult {
-        val invoker = initInvoker(testDir)
-
-        val request: InvocationRequest = DefaultInvocationRequest()
-        request.isBatchMode = true
-        request.isDebug = false
-        request.isShowErrors = true
-        request.properties = params
-        request.goals = listOf("test-compile")
-        val logger =
-            PrintStreamLogger(
-                PrintStream(
-                    FileOutputStream(File(testDir, "maven-${testDir.name}.log")),
-                    true,
-                    "UTF-8"
-                ),
-                InvokerLogger.DEBUG
-            )
-        invoker.logger = logger
-        return invoker.execute(request)
     }
 }

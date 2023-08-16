@@ -14,8 +14,8 @@ import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.codehaus.plexus.logging.Logger
 
-@Mojo(name = "graven", defaultPhase = PROCESS_SOURCES)
-class GravenMojo : AbstractMojo() {
+@Mojo(name = "sync", defaultPhase = PROCESS_SOURCES)
+class ReplacementMojo : AbstractMojo() {
     companion object {
         val PROPERTY_MATCHER =
             RegularExpression.startOfInput()
@@ -65,9 +65,6 @@ class GravenMojo : AbstractMojo() {
 
     override fun execute() {
         updateBuildFiles()
-        bindLifecycles()
-    }
-    private fun bindLifecycles() {
     }
 
     private fun updateBuildFiles() {

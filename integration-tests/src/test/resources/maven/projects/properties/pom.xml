@@ -35,12 +35,18 @@
         <plugins>
             <plugin>
                 <groupId>com.antwerkz.build</groupId>
+                <artifactId>graven-extension</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>com.antwerkz.build</groupId>
                 <artifactId>graven</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>graven</goal>
+                            <goal>sync</goal>
                         </goals>
                     </execution>
                 </executions>

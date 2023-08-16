@@ -1,5 +1,3 @@
 package com.antwerkz.build
 
-class SampleClass  {
-
-}
+class DoubleQuotes
