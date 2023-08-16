@@ -10,17 +10,14 @@ on:
 
 jobs:
   CodeAudits:
-    name: Code Audits
     uses: evanchooly/workflows/.github/workflows/code-audits.yml@master
 
   Build:
-    name: Build
     uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
       saveBuild: true
 
   Test:
-    name: Tests
     needs:
       - CodeAudits
       - Build
@@ -33,7 +30,6 @@ jobs:
       maven-flags: "-Dgradle.version=${{ matrix.gradle }}"
 
   Release:
-    name: Release
     if: github.ref_type == 'branch' || github.ref_type == 'tag'
     needs:
       - Build
