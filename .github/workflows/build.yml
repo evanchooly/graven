@@ -14,12 +14,12 @@ jobs:
 
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
-    needs: CodeAudits
     with:
       saveBuild: true
 
   Test:
     needs:
+      - CodeAudits
       - Build
     strategy:
       matrix:
@@ -33,6 +33,7 @@ jobs:
     if: github.ref_type == 'branch' || github.ref_type == 'tag'
     needs:
       - Build
+      - Test
     uses: evanchooly/workflows/.github/workflows/release.yml@master
     with:
       java: 17
