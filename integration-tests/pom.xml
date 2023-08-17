@@ -7,13 +7,14 @@
     <parent>
         <groupId>com.antwerkz.build</groupId>
         <artifactId>graven-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>integration-tests</artifactId>
 
     <properties>
+        <gradle.version>8.0.2</gradle.version>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
@@ -29,6 +30,11 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+                            <environmentVariables>
+                                <gradle.version>${gradle.version}</gradle.version>
+                            </environmentVariables>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -36,7 +42,6 @@
     </build>
 
     <dependencies>
-
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
