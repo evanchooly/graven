@@ -121,7 +121,6 @@ open class MavenTester {
                 }
             }
         invoker.mavenHome = mavenHome
-        invoker.workingDirectory = root
         invoker.localRepositoryDirectory =
             File(
                 getProperty("maven.repo.local")
@@ -144,6 +143,7 @@ open class MavenTester {
         request.properties = params
         request.setQuiet(quiet)
         request.goals = goals
+        request.baseDirectory = testDir
         request.setOutputHandler { line -> output += line }
 
         val invoker = initInvoker(testDir)
