@@ -1,13 +1,16 @@
 package com.antwerkz.build
 
+import java.io.File
+import java.io.FileOutputStream
+import java.lang.Compiler.command
 import org.apache.maven.plugin.AbstractMojo
+import org.apache.maven.plugin.MojoExecutionException
 import org.apache.maven.plugins.annotations.Component
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 import org.codehaus.plexus.logging.Logger
 import org.zeroturnaround.exec.ProcessExecutor
-import org.zeroturnaround.exec.stream.LogOutputStream
 
 @Mojo(name = "gradle")
 class GradleInvocationMojo : AbstractMojo() {
@@ -15,10 +18,12 @@ class GradleInvocationMojo : AbstractMojo() {
         private val baseCommand =
             listOf(
                 "java",
+                "-Xmx64m",
+                "-Xms64m",
+                "-Dorg.gradle.appname=gradlew",
                 "-cp",
                 "gradle/wrapper/gradle-wrapper.jar",
                 "org.gradle.wrapper.GradleWrapperMain",
-                "--no-daemon",
                 "--console",
                 "plain"
             )
@@ -28,51 +33,36 @@ class GradleInvocationMojo : AbstractMojo() {
 
     @Parameter(defaultValue = "\${project}", required = true, readonly = true)
     lateinit var project: MavenProject
-
     @Parameter lateinit var task: GradleTask
+    @Parameter(defaultValue = "true") var log = true
 
-    @Parameter(defaultValue = "true") var quiet = true
-
-    /*
-    <configuration>
-        <executable>java</executable>
-        <workingDirectory>${project.basedir}</workingDirectory>
-        <arguments>
-            <argument>-cp</argument>
-            <argument>gradle/wrapper/gradle-wrapper.jar</argument>
-            <argument>org.gradle.wrapper.GradleWrapperMain</argument>
-            <argument>classes</argument>
-        </arguments>
-        <useMavenLogger>true</useMavenLogger>
-    </configuration>
-
-         */
     override fun execute() {
         var command = baseCommand
-        if (quiet) {
-            command += "--quiet"
+        command += listOf(task.name, *task.args.toTypedArray())
+        val executor = ProcessExecutor().command(command).directory(project.basedir)
+        if (log) {
+            logger.info(
+                "invoking gradle:\n\tdirectory: ${project.basedir}\n\tcommand: ${command.joinToString(" ")}"
+            )
+            val infoLogFile = File(project.basedir, "build/graven/${task.name}-info.log")
+            infoLogFile.parentFile.mkdirs()
+            logger.info("Logging enabled. See build/graven for details.")
+            executor
+                .redirectOutput(FileOutputStream(infoLogFile))
+                .redirectError(
+                    FileOutputStream(File(project.basedir, "build/graven/${task.name}-error.log"))
+                )
         }
-        command += listOf("-i", task.name, *task.args.toTypedArray())
-        logger.debug("executing command: ${command.joinToString(" ")}")
-        ProcessExecutor()
-            .command(command)
-            .directory(project.basedir)
-            .redirectOutput(
-                object : LogOutputStream() {
-                    override fun processLine(line: String) {
-                        if (!quiet) {
-                            logger.info("> ${line}")
-                        }
-                    }
-                }
-            )
-            .redirectError(
-                object : LogOutputStream() {
-                    override fun processLine(line: String) {
-                        logger.error("[error] > ${line}")
-                    }
-                }
-            )
-            .execute()
+        val execute = executor.execute()
+
+        if (execute.exitValue != 0) {
+            if (log) {
+                throw MojoExecutionException("gradle run failed. check logs in build/graven/")
+            } else {
+                throw MojoExecutionException(
+                    "gradle run failed. enabling logging to see the gradle output."
+                )
+            }
+        }
     }
 }

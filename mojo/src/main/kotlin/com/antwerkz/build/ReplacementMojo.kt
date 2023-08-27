@@ -3,6 +3,7 @@ package com.antwerkz.build
 import com.antwerkz.expression.RegularExpression
 import com.antwerkz.expression.toRegex
 import java.io.File
+import java.io.IOException
 import java.nio.charset.Charset
 import java.util.Properties
 import org.apache.maven.model.Dependency
@@ -75,8 +76,9 @@ class ReplacementMojo : AbstractMojo() {
             .split(",")
             .map { it.trim() }
             .forEach {
-                val file = File(it)
+                val file = File(project.basedir, it)
 
+                logger.info("Updating ${file}")
                 if (file.exists()) {
                     file.writeText(
                         file
@@ -97,20 +99,24 @@ class ReplacementMojo : AbstractMojo() {
     }
 
     private fun updateGradleWrapper() {
-        val file = File("gradle/wrapper/gradle-wrapper.properties")
+        val file = File(project.basedir, "gradle/wrapper/gradle-wrapper.properties")
 
-        file.writeText(
-            file
-                .readLines(Charset.defaultCharset())
-                .map { line: String ->
-                    if (line.startsWith("distributionUrl=", ignoreCase = true)) {
-                        """distributionUrl=https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"""
-                    } else {
-                        line
+        try {
+            file.writeText(
+                file
+                    .readLines(Charset.defaultCharset())
+                    .map { line: String ->
+                        if (line.startsWith("distributionUrl=", ignoreCase = true)) {
+                            """distributionUrl=https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"""
+                        } else {
+                            line
+                        }
                     }
-                }
-                .joinToString("\n")
-        )
+                    .joinToString("\n")
+            )
+        } catch (e: IOException) {
+            throw e
+        }
     }
 }
 
