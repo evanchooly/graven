@@ -40,6 +40,7 @@
                 <groupId>com.antwerkz.build</groupId>
                 <artifactId>graven</artifactId>
                 <version>1.0.0-SNAPSHOT</version>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>sync</id>
