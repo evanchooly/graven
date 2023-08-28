@@ -25,20 +25,22 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
         val GROUPID = "com.antwerkz.build"
         val ARTIFACTID = "graven"
         val defaults =
-            listOf<PluginReplacement>(
-                //                PluginReplacement(
-                //                    "org.apache.maven.plugins",
-                //                    "maven-compiler-plugin",
-                //                    "classes",
-                //                    "default-compile"
-                //                ),
-                //                PluginReplacement(
-                //                    "org.apache.maven.plugins",
-                //                    "maven-compiler-plugin",
-                //                    "testClasses",
-                //                    "default-testCompile"
-                //                ),
-                )
+            listOf(
+                PluginReplacement(
+                    "org.apache.maven.plugins",
+                    "maven-compiler-plugin",
+                    "testClasses",
+                    "test-compile",
+                    "default-testCompile"
+                ),
+                PluginReplacement(
+                    "org.apache.maven.plugins",
+                    "maven-compiler-plugin",
+                    "classes",
+                    "compile",
+                    "default-compile"
+                ),
+            )
     }
     private var logger: Logger? = null
 
@@ -89,14 +91,12 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
             var config = XmlMapper().readValue(configuration.toString(), GravenConfig::class.java)
             defaults.forEach { replacement ->
                 findPluginByGA(model, replacement.groupId, replacement.artifactId)?.let { target ->
-                    var oldExecution = target.executions.first { it.id == replacement.executionId }
-                    target.executions.remove(oldExecution)
-
+                    target.executions.remove(target.executions.first { it.id == replacement.executionId })
                     plugin.executions.add(
                         PluginExecution().also {
-                            it.id = "injected-graven-${target.key}"
+                            it.id = "injected-graven-${replacement.phase}-${target.key}"
                             it.goals.add(GradleInvocationMojo.MOJO_NAME)
-                            it.phase = oldExecution.phase
+                            it.phase = target.executions.first { it.id == replacement.executionId }.phase
                             it.configuration =
                                 configure(mapOf("task" to mapOf("name" to replacement.gradleTask)))
                         }
@@ -111,10 +111,9 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
     protected fun findGravenPlugin(model: Model) = findPluginByGA(model, GROUPID, ARTIFACTID)
 
     private fun findPluginByGA(model: Model, groupId: String, artifactId: String): Plugin? {
-        return model.build
-            ?.plugins
-            ?.filter { plugin -> (groupId == plugin.groupId) && (artifactId == plugin.artifactId) }
-            ?.first()
+        return model.build?.plugins?.firstOrNull { plugin ->
+            (groupId == plugin.groupId) && (artifactId == plugin.artifactId)
+        }
     }
 
     private fun Xpp3Dom.addChildren(children: Map<*, *>): Xpp3Dom {

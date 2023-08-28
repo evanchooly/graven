@@ -49,23 +49,6 @@ open class MavenTester {
             return model.version
         }
 
-/*
-        fun initProject(name: String): File {
-            val tc = File("target/test-classes/maven")
-            if (!tc.isDirectory) {
-                LOG.info("$tc created? ${tc.mkdirs()}")
-            }
-            val projectRoot = File(tc, name)
-            if (!projectRoot.exists()) {
-                throw RuntimeException("Cannot find directory: " + projectRoot.absolutePath)
-            }
-            if (!projectRoot.isDirectory) {
-                throw RuntimeException("Not a project directory: " + projectRoot.absolutePath)
-            }
-            return projectRoot
-        }
-*/
-
         fun getTargetDir(name: String): File {
             return File("target/test-projects/$name")
         }
@@ -143,7 +126,7 @@ open class MavenTester {
 
     protected fun setupAndInvoke(
         testDir: File,
-        goals: List<String> = listOf("clean", "compile"),
+        goals: List<String> = listOf("clean", "test-compile"),
         quiet: Boolean = false,
         params: Properties = Properties(),
     ): Pair<InvocationResult, List<String>> {

@@ -11,6 +11,7 @@
         <kotlin.version>1.8.10</kotlin.version>
         <morphia.version>2.3.5</morphia.version>
         <critter.version>4.4.4</critter.version>
+        <testng.version>7.8.0</testng.version>
         <maven.model>3.9.1</maven.model>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
