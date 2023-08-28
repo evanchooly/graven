@@ -2,7 +2,9 @@ package com.antwerkz.build.maven
 
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.FileReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.io.PrintStream
@@ -38,10 +40,20 @@ open class MavenTester {
                 .map { it.parentFile }
                 .first()
         }
+
+        val gravenVersion: String by lazy { pomVersion() }
+
+        private fun pomVersion(): String {
+            val reader = MavenXpp3Reader()
+            val model = reader.read(FileReader("../pom.xml"))
+            return model.version
+        }
+
+/*
         fun initProject(name: String): File {
             val tc = File("target/test-classes/maven")
             if (!tc.isDirectory) {
-                LOG.info("test-classes created? ${tc.mkdirs()}")
+                LOG.info("$tc created? ${tc.mkdirs()}")
             }
             val projectRoot = File(tc, name)
             if (!projectRoot.exists()) {
@@ -52,32 +64,32 @@ open class MavenTester {
             }
             return projectRoot
         }
+*/
 
         fun getTargetDir(name: String): File {
-            return File("target/test-classes/$name")
+            return File("target/test-projects/$name")
         }
 
-        fun initProject(name: String, output: String): File {
-            val tc = File("target/test-classes")
+        fun initProject(name: String, output: File = getTargetDir(name)): File {
+            val tc = File("src/test/resources/maven/projects")
             if (!tc.isDirectory) {
-                LOG.info("test-classes created? ${tc.mkdirs()}")
+                throw FileNotFoundException(tc.absolutePath)
             }
             val input = File(tc, name)
             if (!input.isDirectory) {
                 throw RuntimeException("Cannot find directory: " + input.absolutePath)
             }
-            val out = File(tc, output)
-            if (out.isDirectory) {
-                out.deleteRecursively()
+            if (output.isDirectory) {
+                output.deleteRecursively()
             }
-            val mkdir: Boolean = out.mkdirs()
-            LOG.info("${out.absolutePath} created? $mkdir")
+            val mkdir: Boolean = output.mkdirs()
+            LOG.info("${output.absolutePath} created? $mkdir")
             try {
-                copyDirectoryStructure(input, out)
+                copyDirectoryStructure(input, output)
             } catch (e: IOException) {
                 throw RuntimeException("Cannot copy project resources", e)
             }
-            return out
+            return output
         }
 
         fun assertThatOutputWorksCorrectly(logs: String) {
@@ -112,7 +124,7 @@ open class MavenTester {
         }
     }
 
-    fun initInvoker(root: File): Invoker {
+    fun initInvoker(): Invoker {
         val invoker: Invoker =
             object : DefaultInvoker() {
                 override fun execute(request: InvocationRequest): InvocationResult {
@@ -131,9 +143,9 @@ open class MavenTester {
 
     protected fun setupAndInvoke(
         testDir: File,
-        goals: List<String> = listOf("test-compile"),
+        goals: List<String> = listOf("clean", "compile"),
         quiet: Boolean = false,
-        params: Properties = Properties()
+        params: Properties = Properties(),
     ): Pair<InvocationResult, List<String>> {
         val output = mutableListOf<String>()
         val request: InvocationRequest = DefaultInvocationRequest()
@@ -145,8 +157,9 @@ open class MavenTester {
         request.goals = goals
         request.baseDirectory = testDir
         request.setOutputHandler { line -> output += line }
+        request.properties["graven.version"] = gravenVersion
 
-        val invoker = initInvoker(testDir)
+        val invoker = initInvoker()
         invoker.logger =
             PrintStreamLogger(
                 PrintStream(

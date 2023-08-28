@@ -39,67 +39,17 @@
             <plugin>
                 <groupId>com.antwerkz.build</groupId>
                 <artifactId>graven</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${graven.version}</version>
                 <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>sync</id>
-                        <goals>
-                            <goal>sync</goal>
-                        </goals>
-                        <configuration>
-                            <gradleVersion>7.6.1</gradleVersion>
-                            <replacements>
-                                <replacement>
-                                    <pattern>(kotlin\("jvm"\).*)</pattern>
-                                    <value>kotlin("jvm") version "${kotlin.version}"</value>
-                                </replacement>
-                            </replacements>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>welcome</id>
-                        <goals>
-                            <goal>gradle</goal>
-                        </goals>
-                        <phase>compile</phase>
-                        <configuration>
-                            <quiet>false</quiet>
-                            <task>
-                                <name>welcome</name>
-                            </task>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>packaging</id>
-                        <goals>
-                            <goal>gradle</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <quiet>false</quiet>
-                            <task>
-                                <name>packaging</name>
-                            </task>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <!-- Replacing default-testCompile as it is treated specially by maven -->
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
+                <configuration>
+                    <gradleVersion>7.6.1</gradleVersion>
+                    <replacements>
+                        <replacement>
+                            <pattern>(kotlin\("jvm"\).*)</pattern>
+                            <value>kotlin("jvm") version "${kotlin.version}"</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
             </plugin>
         </plugins>
     </build>

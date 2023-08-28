@@ -37,7 +37,7 @@
             <plugin>
                 <groupId>com.antwerkz.build</groupId>
                 <artifactId>graven</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${graven.version}</version>
                 <executions>
                     <execution>
                         <goals>

@@ -2,6 +2,7 @@ package com.antwerkz.build
 
 import com.antwerkz.expression.RegularExpression
 import com.antwerkz.expression.toRegex
+import com.fasterxml.jackson.annotation.JsonRootName
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -120,6 +121,7 @@ class ReplacementMojo : AbstractMojo() {
     }
 }
 
+@JsonRootName("replacement")
 class RegexReplacement() {
     lateinit var pattern: String
     lateinit var value: String

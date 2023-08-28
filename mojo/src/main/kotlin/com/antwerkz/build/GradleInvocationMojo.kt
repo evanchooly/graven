@@ -1,8 +1,8 @@
 package com.antwerkz.build
 
+import com.antwerkz.build.GradleInvocationMojo.Companion.MOJO_NAME
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.Compiler.command
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugin.MojoExecutionException
 import org.apache.maven.plugins.annotations.Component
@@ -12,9 +12,10 @@ import org.apache.maven.project.MavenProject
 import org.codehaus.plexus.logging.Logger
 import org.zeroturnaround.exec.ProcessExecutor
 
-@Mojo(name = "gradle")
+@Mojo(name = MOJO_NAME)
 class GradleInvocationMojo : AbstractMojo() {
     companion object {
+        const val MOJO_NAME = "gradle"
         private val baseCommand =
             listOf(
                 "java",
