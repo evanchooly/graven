@@ -1,2 +1,1 @@
-class Dummy {
-}
+class Dummy {}
