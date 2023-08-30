@@ -38,19 +38,6 @@
 
     <build>
         <plugins>
-<!--
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                    <compilerArgument>-proc:none</compilerArgument>
-                    <compilerArgument>-Xlint:deprecation</compilerArgument>
-                </configuration>
-            </plugin>
--->
-
             <plugin>
                 <groupId>com.antwerkz.graven</groupId>
                 <artifactId>graven</artifactId>
@@ -58,14 +45,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <gradleVersion>8.0.2</gradleVersion>
-                    <replacements>
-<!--
-                        <replacement>
-                            <pattern>(kotlin\("jvm"\).*)</pattern>
-                            <value>kotlin("jvm") version "${kotlin.version}"</value>
-                        </replacement>
--->
-                    </replacements>
                 </configuration>
             </plugin>
         </plugins>

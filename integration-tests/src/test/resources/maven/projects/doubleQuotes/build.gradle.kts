@@ -1,7 +1,9 @@
+import jdk.tools.jlink.resources.plugins
+
 buildscript {
     dependencies {
         classpath("org.apache.maven:maven-model:2.3.1")
-        classpath("com.fasterxml.jackson.core:jackson-databind:1.0.0")
+        classpath("com.fasterxml.jackson.core:jackson-databind:2.14.1")
     }
 }
 

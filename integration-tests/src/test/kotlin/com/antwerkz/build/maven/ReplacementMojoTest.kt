@@ -9,70 +9,63 @@ import org.testng.annotations.Test
 class ReplacementMojoTest : MavenTester() {
     @Test
     fun doubleQuoteUpdates() {
-        val testDir = initProject("projects/doubleQuotes")
+        val testDir = initProject("doubleQuotes")
 
-        val (result, output) = setupAndInvoke(testDir)
+        val (result, output) = setupAndInvoke(testDir, listOf("process-sources"))
 
         assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
-        assertTrue(lines.any { it.contains("classpath(\"org.apache.maven:maven-model:3.9.1\")") })
+        find(lines, "classpath(\"org.apache.maven:maven-model:3.9.1\")")
+        find(lines, "classpath(\"com.fasterxml.jackson.core:jackson-databind:2.14.1\")")
+        find(lines, "kotlin(\"jvm\") version \"1.8.10\"")
+    }
+
+    private fun find(lines: List<String>, target: String) {
         assertTrue(
-            lines.any {
-                it.contains("classpath(\"com.fasterxml.jackson.core:jackson-databind:2.14.1\")")
-            }
+            lines.any { it.contains(target) },
+            "Can't find:\n$target \nin \n\n" + lines.joinToString("\n", prefix = "\n")
         )
-        assertTrue(lines.any { it.contains("kotlin(\"jvm\") version \"1.8.10\"") })
     }
 
     @Test
     fun noRegex() {
-        val testDir = initProject("projects/noRegex")
+        val testDir = initProject("noRegex")
 
         val (result, output) = setupAndInvoke(testDir)
 
         assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
-        assertTrue(lines.any { it.contains("classpath(\"org.apache.maven:maven-model:2.3.1\")") })
-        assertTrue(
-            lines.any {
-                it.contains("classpath(\"com.fasterxml.jackson.core:jackson-databind:2.14.1\")")
-            }
-        )
-        assertTrue(lines.any { it.contains("kotlin(\"jvm\") version \"1.6.0\"") })
+        find(lines, "classpath(\"org.apache.maven:maven-model:2.3.1\")")
+        find(lines, "classpath(\"com.fasterxml.jackson.core:jackson-databind:2.14.1\")")
+        find(lines, "kotlin(\"jvm\") version \"1.6.0\"")
     }
 
     @Test
     fun properties() {
-        val testDir = initProject("projects/properties")
+        val testDir = initProject("properties")
 
         val (result, output) = setupAndInvoke(testDir)
 
-        assertEquals(result.exitCode, 0)
+        assertEquals(result.exitCode, 0, output.joinToString("\n", "\n"))
         val lines = File(testDir, "gradle.properties").readLines(Charset.forName("UTF-8"))
 
-        assertTrue(lines.any { it.contains("guava.version=31.1-jre") })
-        assertTrue(lines.any { it.contains("testng.version=7.8.0") })
+        find(lines, "guava.version=31.1-jre")
+        find(lines, "testng.version=7.8.0")
     }
 
     @Test
     fun singleQuoteUpdates() {
-        val testDir = initProject("projects/singleQuotes")
+        val testDir = initProject("singleQuotes")
 
         val (result, output) = setupAndInvoke(testDir)
 
         assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle").readLines(Charset.forName("UTF-8"))
 
-        assertTrue(
-            lines.any { it.contains("implementation('org.apache.maven:maven-model:2.3.1')") }
-        )
-        assertTrue(
-            lines.any {
-                it.contains("classpath('com.fasterxml.jackson.core:jackson-databind:2.14.1')")
-            }
-        )
-        assertTrue(lines.any { it.contains("kotlin('jvm') version '1.8.10'") })
+        find(lines, "implementation('org.apache.maven:maven-model:2.3.1')")
+        find(lines, "classpath('com.fasterxml.jackson.core:jackson-databind:2.14.1')")
+        find(lines, "kotlin('jvm') version '1.8.10'")
     }
 }

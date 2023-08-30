@@ -6,6 +6,7 @@
     <groupId>com.antwerkz.graven</groupId>
     <artifactId>doubleQuotes</artifactId>
     <version>infinity</version>
+    <packaging>pom</packaging>
 
     <properties>
         <kotlin.version>1.8.10</kotlin.version>
@@ -28,7 +29,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>${maven.model}</version>
+            <version>3.9.1</version>
         </dependency>
     </dependencies>
 
@@ -38,16 +39,9 @@
                 <groupId>com.antwerkz.graven</groupId>
                 <artifactId>graven</artifactId>
                 <version>${graven.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>sync</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <extensions>true</extensions>
                 <configuration>
-                    <gradleVersion>7.6.1</gradleVersion>
-                    <files>${project.basedir}/build.gradle.kts, ${project.basedir}/gradle.properties</files>
+                    <gradleVersion>8.0.2</gradleVersion>
                     <replacements>
                         <replacement>
                             <pattern>(kotlin\("jvm"\).*)</pattern>
@@ -55,22 +49,6 @@
                         </replacement>
                     </replacements>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <!-- Replacing default-testCompile as it is treated specially by maven -->
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

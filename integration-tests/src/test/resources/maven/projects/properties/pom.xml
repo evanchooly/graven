@@ -35,12 +35,6 @@
         <plugins>
             <plugin>
                 <groupId>com.antwerkz.graven</groupId>
-                <artifactId>graven-extension</artifactId>
-                <version>${graven.version}</version>
-                <extensions>true</extensions>
-            </plugin>
-            <plugin>
-                <groupId>com.antwerkz.graven</groupId>
                 <artifactId>graven</artifactId>
                 <version>${graven.version}</version>
                 <executions>

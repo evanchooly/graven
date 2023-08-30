@@ -24,7 +24,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom
 @Singleton
 class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabled {
     companion object {
-        val GROUPID = "com.antwerkz.build"
+        val GROUPID = "com.antwerkz.graven"
         val ARTIFACTID = "graven"
         val defaults =
             listOf(
