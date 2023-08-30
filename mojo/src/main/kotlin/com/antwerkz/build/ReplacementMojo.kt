@@ -58,8 +58,6 @@ class ReplacementMojo : AbstractMojo() {
 
     @Parameter var replacements: List<RegexReplacement> = listOf()
 
-    @Parameter var mappedProperties: List<MappedProperty> = listOf()
-
     @Parameter(defaultValue = "build.gradle,build.gradle.kts,gradle.properties,settings.gradle")
     lateinit var files: String
 

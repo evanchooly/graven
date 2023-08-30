@@ -58,7 +58,7 @@ class GradleInvocationMojo : AbstractMojo() {
 
         if (execute.exitValue != 0) {
             if (log) {
-                throw MojoExecutionException("gradle run failed. check logs in build/graven/")
+                throw MojoExecutionException("gradle run failed. check logs in ${File(project.basedir, "build/graven").absolutePath}")
             } else {
                 throw MojoExecutionException(
                     "gradle run failed. enabling logging to see the gradle output."
