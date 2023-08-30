@@ -28,7 +28,7 @@ jobs:
     with:
       reuseBuild: true
       maven-flags: "-Dgradle.version=${{ matrix.gradle }}"
-      archive-name: "graven-${{ matrix.grade }}"
+      archive-name: "graven-${{ matrix.gradle }}"
 
   Release:
     if: github.ref_type == 'branch' || github.ref_type == 'tag'
