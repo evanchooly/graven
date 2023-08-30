@@ -1,10 +1,17 @@
 package com.antwerkz.build.maven
 
+import com.antwerkz.build.maven.MavenTester.Companion.initProject
 import java.io.File
+import org.testng.Assert
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 class GradleInvocationTest : MavenTester() {
+    @Test
+    fun fail() {
+        Assert.fail("I'm supposed to fail")
+    }
+
     @Test
     fun invokeGradle() {
         val testDir = initProject("gradleInvoke")
