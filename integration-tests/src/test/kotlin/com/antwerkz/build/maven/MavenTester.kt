@@ -101,7 +101,7 @@ open class MavenTester {
         request.baseDirectory = testDir
         request.setOutputHandler { line -> output += line }
         request.properties["graven.version"] = gravenVersion
-        request.properties["gradle.version"] = getProperty("gradle.version", "8.2.1")
+        request.properties["gradle.version"] = getProperty("gradle.version" /*, "8.2.1"*/)
         println(
             "**************** Invoking maven test with gradle.version = ${request.properties["gradle.version"]}"
         )
