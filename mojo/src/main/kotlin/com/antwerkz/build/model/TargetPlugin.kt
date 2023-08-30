@@ -1,6 +1,6 @@
 package com.antwerkz.build.model
 
-data class PluginReplacement(
+data class TargetPlugin(
     val groupId: String,
     val artifactId: String,
     val gradleTask: String,

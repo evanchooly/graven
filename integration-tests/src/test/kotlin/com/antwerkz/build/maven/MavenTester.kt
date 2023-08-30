@@ -65,8 +65,7 @@ open class MavenTester {
             if (output.isDirectory) {
                 output.deleteRecursively()
             }
-            val mkdir: Boolean = output.mkdirs()
-            LOG.info("${output.absolutePath} created? $mkdir")
+            output.mkdirs()
             try {
                 copyDirectoryStructure(input, output)
             } catch (e: IOException) {

@@ -47,7 +47,7 @@ class GradleInvocationMojo : AbstractMojo() {
             )
             val infoLogFile = File(project.basedir, "build/graven/${task.name}-info.log")
             infoLogFile.parentFile.mkdirs()
-            logger.info("Logging enabled. See build/graven for details.")
+            logger.debug("Logging enabled. See build/graven for details.")
             executor
                 .redirectOutput(FileOutputStream(infoLogFile))
                 .redirectError(

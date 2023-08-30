@@ -22,7 +22,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.antwerkz.build</groupId>
+                <groupId>com.antwerkz.graven</groupId>
                 <artifactId>graven</artifactId>
                 <version>${graven.version}</version>
                 <executions>

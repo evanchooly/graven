@@ -1,21 +1,26 @@
 package com.antwerkz.build.maven
 
+import java.io.File
+import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 class GradleInvocationTest : MavenTester() {
     @Test
     fun invokeGradle() {
         val testDir = initProject("gradleInvoke")
-        val (_, welcome) = setupAndInvoke(testDir)
-        val string = welcome.toLogFormat()
-        println(string)
-        /*
-                assertTrue(welcome.contains("[INFO] > hello, graven!"), string)
 
-                val (_, packaging) = setupAndInvoke(testDir, goals = listOf("package"))
-                string = packaging.toLogFormat()
-                assertTrue(packaging.contains("[INFO] > hello, graven!"), string)
-                assertTrue(packaging.contains("[INFO] > working hard"), string)
-        */
+        val (_, packaging) = setupAndInvoke(testDir, goals = listOf("package"))
+        assertTrue(
+            File(testDir, "build/libs/gradle-invoke-0.1.0-SNAPSHOT.jar").exists(),
+            "Should find the main artifact"
+        )
+        assertTrue(
+            File(testDir, "build/libs/gradle-invoke-0.1.0-SNAPSHOT-javadoc.jar").exists(),
+            "Should find the javadoc artifact"
+        )
+        assertTrue(
+            File(testDir, "build/libs/gradle-invoke-0.1.0-SNAPSHOT-sources.jar").exists(),
+            "Should find the sources artifact"
+        )
     }
 }
