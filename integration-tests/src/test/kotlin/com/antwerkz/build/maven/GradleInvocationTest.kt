@@ -9,7 +9,7 @@ class GradleInvocationTest : MavenTester() {
     fun invokeGradle() {
         val testDir = initProject("gradleInvoke")
 
-        val (_, packaging) = setupAndInvoke(testDir, goals = listOf("package"))
+        setupAndInvoke(testDir, goals = listOf("package"))
         assertTrue(
             File(testDir, "build/libs/gradle-invoke-0.1.0-SNAPSHOT.jar").exists(),
             "Should find the main artifact"

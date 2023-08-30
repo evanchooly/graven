@@ -14,7 +14,6 @@
     <artifactId>integration-tests</artifactId>
 
     <properties>
-        <gradle.version>8.0.2</gradle.version>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 

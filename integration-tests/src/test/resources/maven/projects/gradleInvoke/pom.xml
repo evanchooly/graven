@@ -9,7 +9,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <gradle.version>8.0.2</gradle.version>
         <kotlin.version>1.8.10</kotlin.version>
         <morphia.version>2.3.5</morphia.version>
         <testng.version>7.8.0</testng.version>
@@ -43,9 +42,6 @@
                 <artifactId>graven</artifactId>
                 <version>${graven.version}</version>
                 <extensions>true</extensions>
-                <configuration>
-                    <gradleVersion>8.0.2</gradleVersion>
-                </configuration>
             </plugin>
         </plugins>
     </build>

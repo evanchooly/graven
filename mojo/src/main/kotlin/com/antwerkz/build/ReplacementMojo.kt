@@ -63,7 +63,7 @@ class ReplacementMojo : AbstractMojo() {
     @Parameter(defaultValue = "build.gradle,build.gradle.kts,gradle.properties,settings.gradle")
     lateinit var files: String
 
-    @Parameter(defaultValue = "8.1.1", property = "gradle.version")
+    @Parameter(defaultValue = "8.2.1", property = "gradle.version")
     lateinit var gradleVersion: String
 
     override fun execute() {
