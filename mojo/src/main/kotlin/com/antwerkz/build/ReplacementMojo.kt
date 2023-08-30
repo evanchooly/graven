@@ -63,7 +63,8 @@ class ReplacementMojo : AbstractMojo() {
     @Parameter(defaultValue = "build.gradle,build.gradle.kts,gradle.properties,settings.gradle")
     lateinit var files: String
 
-    @Parameter(defaultValue = "8.1.1") lateinit var gradleVersion: String
+    @Parameter(defaultValue = "8.1.1", property = "gradle.version")
+    lateinit var gradleVersion: String
 
     override fun execute() {
         updateBuildFiles()
@@ -101,7 +102,6 @@ class ReplacementMojo : AbstractMojo() {
 
     private fun updateGradleWrapper() {
         val file = File(project.basedir, "gradle/wrapper/gradle-wrapper.properties")
-
         try {
             file.writeText(
                 file

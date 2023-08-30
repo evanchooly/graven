@@ -41,7 +41,6 @@
                 <version>${graven.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <gradleVersion>8.0.2</gradleVersion>
                     <replacements>
                         <replacement>
                             <pattern>(kotlin\("jvm"\).*)</pattern>

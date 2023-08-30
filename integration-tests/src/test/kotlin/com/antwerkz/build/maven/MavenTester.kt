@@ -1,31 +1,23 @@
 package com.antwerkz.build.maven
 
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.FileReader
 import java.io.IOException
-import java.io.InputStreamReader
 import java.io.PrintStream
 import java.lang.System.getProperty
-import java.nio.charset.StandardCharsets
 import java.util.Properties
-import java.util.function.Predicate
-import java.util.regex.Pattern
-import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.apache.maven.shared.invoker.DefaultInvocationRequest
 import org.apache.maven.shared.invoker.DefaultInvoker
 import org.apache.maven.shared.invoker.InvocationRequest
 import org.apache.maven.shared.invoker.InvocationResult
 import org.apache.maven.shared.invoker.Invoker
-import org.apache.maven.shared.invoker.InvokerLogger
+import org.apache.maven.shared.invoker.InvokerLogger.DEBUG
 import org.apache.maven.shared.invoker.PrintStreamLogger
 import org.codehaus.plexus.util.FileUtils.copyDirectoryStructure
 import org.slf4j.LoggerFactory
-import org.testng.Assert.assertFalse
-import org.testng.Assert.assertTrue
 
 open class MavenTester {
     companion object {
@@ -73,37 +65,6 @@ open class MavenTester {
             }
             return output
         }
-
-        fun assertThatOutputWorksCorrectly(logs: String) {
-            assertFalse(logs.isEmpty())
-            val infoLogLevel = "INFO"
-            assertTrue(logs.contains(infoLogLevel))
-            val datePattern: Predicate<String> =
-                Pattern.compile("\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2},\\d{3}").asPredicate()
-            assertTrue(datePattern.test(logs))
-            assertTrue(
-                logs.contains("cdi, resteasy, smallrye-context-propagation, vertx, websockets")
-            )
-            assertFalse(logs.contains("JBoss Threads version"))
-        }
-
-        fun loadPom(directory: File): Model {
-            val pom = File(directory, "pom.xml")
-            assertTrue(pom.isFile)
-            try {
-                InputStreamReader(FileInputStream(pom), StandardCharsets.UTF_8).use { isr ->
-                    return MavenXpp3Reader().read(isr)
-                }
-            } catch (e: Exception) {
-                throw IllegalArgumentException("Cannot read the pom.xml file", e)
-            }
-        }
-
-        fun getFilesEndingWith(dir: File, suffix: String): List<File> {
-            val files: Array<File>? =
-                dir.listFiles { _: File, name: String -> name.endsWith(suffix) }
-            return if (files != null) listOf(*files) else emptyList()
-        }
     }
 
     fun initInvoker(): Invoker {
@@ -140,6 +101,7 @@ open class MavenTester {
         request.baseDirectory = testDir
         request.setOutputHandler { line -> output += line }
         request.properties["graven.version"] = gravenVersion
+        request.properties["gradle.version"] = getProperty("gradle.version", "1.2.3")
 
         val invoker = initInvoker()
         invoker.logger =
@@ -149,7 +111,7 @@ open class MavenTester {
                     true,
                     "UTF-8"
                 ),
-                InvokerLogger.DEBUG
+                DEBUG
             )
         return invoker.execute(request) to output
     }
