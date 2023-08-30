@@ -16,7 +16,6 @@ jobs:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
       saveBuild: true
-      archive-name: "graven-first-build"
 
   Test:
     needs:
@@ -29,7 +28,6 @@ jobs:
     with:
       reuseBuild: true
       maven-flags: "-Dgradle.version=${{ matrix.gradle }}"
-      archive-name: "graven-${{ matrix.gradle }}"
 
   Release:
     if: github.ref_type == 'branch' || github.ref_type == 'tag'

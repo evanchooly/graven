@@ -8,11 +8,6 @@ import org.testng.annotations.Test
 
 class GradleInvocationTest : MavenTester() {
     @Test
-    fun fail() {
-        Assert.fail("I'm supposed to fail")
-    }
-
-    @Test
     fun invokeGradle() {
         val testDir = initProject("gradleInvoke")
 
