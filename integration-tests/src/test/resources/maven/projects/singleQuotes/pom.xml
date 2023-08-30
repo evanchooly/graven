@@ -23,7 +23,7 @@
         <plugins>
             <plugin>
                 <groupId>com.antwerkz.graven</groupId>
-                <artifactId>graven</artifactId>
+                <artifactId>maven-plugin</artifactId>
                 <version>${graven.version}</version>
                 <executions>
                     <execution>
