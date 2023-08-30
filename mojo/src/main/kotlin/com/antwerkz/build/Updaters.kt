@@ -40,6 +40,7 @@ enum class Updaters {
     //    KOTLIN_PLUGINS
 
     abstract fun create(input: String): DepReplacer
+
     abstract class DepReplacer(val regex: Regex, input: String) {
         val result = regex.matchEntire(input)
         val groupId: String? by lazy {
@@ -74,6 +75,7 @@ object UpdateValues {
             .char('.')
             .oneOrMore { digit() }
             .zeroOrMoreLazy { anyChar() }
+
     fun matcher(quote: String): Regex {
         return capture { oneOrMore { anyOf { range('a', 'z').range('A', 'Z').whitespaceChar() } } }
             .string("($quote")
@@ -85,6 +87,7 @@ object UpdateValues {
             .string("$quote)")
             .toRegex()
     }
+
     fun propertyMatcher(quote: String) =
         oneOrMoreLazy { anyChar() }
             .atLeast(1) { whitespaceChar() }

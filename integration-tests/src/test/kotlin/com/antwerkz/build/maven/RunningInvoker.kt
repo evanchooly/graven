@@ -25,6 +25,7 @@ constructor(basedir: File, private val debug: Boolean, private val parallel: Boo
     private var result: MavenProcessInvocationResult? = null
     private val log: File?
     private val outStreamHandler: PrintStreamHandler
+
     companion object {
         /**
          * Creates a [PrintStream] with an underlying [TeeOutputStream] composed of `one` and `two`

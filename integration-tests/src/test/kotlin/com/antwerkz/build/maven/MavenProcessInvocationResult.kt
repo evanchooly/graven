@@ -6,6 +6,7 @@ import org.apache.maven.shared.utils.cli.CommandLineException
 class MavenProcessInvocationResult : InvocationResult {
     private var process: Process? = null
     private var exception: CommandLineException? = null
+
     fun destroy() {
         process?.let {
             it.destroy()

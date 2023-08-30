@@ -25,6 +25,7 @@ class ReplacementMojoTest {
     fun doubleQuoteVersionMatching(test: UpdateTest) {
         assertEquals(ReplacementMojo.replace(deps, test.input), test.target, test.toString())
     }
+
     @Test(dataProvider = "versions")
     fun singleQuoteVersionMatching(test: UpdateTest) {
         assertEquals(
