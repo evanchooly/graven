@@ -16,6 +16,7 @@ jobs:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
       saveBuild: true
+      archive-name: "graven-first-build"
 
   Test:
     needs:

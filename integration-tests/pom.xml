@@ -20,22 +20,12 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
+                <groupId>org.apache.maven.surefire</groupId>
+                <artifactId>surefire</artifactId>
                 <version>3.1.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <environmentVariables>
-                                <gradle.version>${gradle.version}</gradle.version>
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                </configuration>
             </plugin>
         </plugins>
     </build>
