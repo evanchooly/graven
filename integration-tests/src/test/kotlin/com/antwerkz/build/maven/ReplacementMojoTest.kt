@@ -2,7 +2,6 @@ package com.antwerkz.build.maven
 
 import java.io.File
 import java.nio.charset.Charset
-import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
@@ -11,9 +10,8 @@ class ReplacementMojoTest : MavenTester() {
     fun doubleQuoteUpdates() {
         val testDir = initProject("doubleQuotes")
 
-        val (result, output) = setupAndInvoke(testDir, listOf("process-sources"))
+        setupAndInvoke(testDir, listOf("process-sources"))
 
-        assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
         find(lines, "classpath(\"org.apache.maven:maven-model:3.9.1\")")
@@ -24,7 +22,7 @@ class ReplacementMojoTest : MavenTester() {
     private fun find(lines: List<String>, target: String) {
         assertTrue(
             lines.any { it.contains(target) },
-            "Can't find:\n$target \nin \n\n" + lines.joinToString("\n", prefix = "\n")
+            "Can't find:\n$target \nin \n\n" + lines.toLogFormat()
         )
     }
 
@@ -32,9 +30,8 @@ class ReplacementMojoTest : MavenTester() {
     fun noRegex() {
         val testDir = initProject("noRegex")
 
-        val (result, output) = setupAndInvoke(testDir)
+        setupAndInvoke(testDir)
 
-        assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle.kts").readLines(Charset.forName("UTF-8"))
 
         find(lines, "classpath(\"org.apache.maven:maven-model:2.3.1\")")
@@ -46,9 +43,8 @@ class ReplacementMojoTest : MavenTester() {
     fun properties() {
         val testDir = initProject("properties")
 
-        val (result, output) = setupAndInvoke(testDir)
+        setupAndInvoke(testDir)
 
-        assertEquals(result.exitCode, 0, output.joinToString("\n", "\n"))
         val lines = File(testDir, "gradle.properties").readLines(Charset.forName("UTF-8"))
 
         find(lines, "guava.version=31.1-jre")
@@ -59,9 +55,8 @@ class ReplacementMojoTest : MavenTester() {
     fun singleQuoteUpdates() {
         val testDir = initProject("singleQuotes")
 
-        val (result, output) = setupAndInvoke(testDir)
+        setupAndInvoke(testDir)
 
-        assertEquals(result.exitCode, 0, output.toLogFormat())
         val lines = File(testDir, "build.gradle").readLines(Charset.forName("UTF-8"))
 
         find(lines, "implementation('org.apache.maven:maven-model:2.3.1')")

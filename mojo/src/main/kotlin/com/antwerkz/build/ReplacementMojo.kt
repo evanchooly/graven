@@ -63,7 +63,7 @@ class ReplacementMojo : AbstractMojo() {
     @Parameter(defaultValue = "build.gradle,build.gradle.kts,gradle.properties,settings.gradle")
     lateinit var files: String
 
-    @Parameter(property = "gradle.version") lateinit var gradleVersion: String
+    @Parameter(property = "gradle.version") var gradleVersion: String? = null
 
     override fun execute() {
         updateBuildFiles()
@@ -100,22 +100,24 @@ class ReplacementMojo : AbstractMojo() {
     }
 
     private fun updateGradleWrapper() {
-        val file = File(project.basedir, "gradle/wrapper/gradle-wrapper.properties")
-        try {
-            file.writeText(
-                file
-                    .readLines(Charset.defaultCharset())
-                    .map { line: String ->
-                        if (line.startsWith("distributionUrl=", ignoreCase = true)) {
-                            """distributionUrl=https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"""
-                        } else {
-                            line
+        gradleVersion?.let {
+            val file = File(project.basedir, "gradle/wrapper/gradle-wrapper.properties")
+            try {
+                file.writeText(
+                    file
+                        .readLines(Charset.defaultCharset())
+                        .map { line: String ->
+                            if (line.startsWith("distributionUrl=", ignoreCase = true)) {
+                                """distributionUrl=https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"""
+                            } else {
+                                line
+                            }
                         }
-                    }
-                    .joinToString("\n")
-            )
-        } catch (e: IOException) {
-            throw e
+                        .joinToString("\n")
+                )
+            } catch (e: IOException) {
+                throw e
+            }
         }
     }
 }

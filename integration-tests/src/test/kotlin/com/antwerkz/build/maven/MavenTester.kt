@@ -18,6 +18,7 @@ import org.apache.maven.shared.invoker.InvokerLogger.DEBUG
 import org.apache.maven.shared.invoker.PrintStreamLogger
 import org.codehaus.plexus.util.FileUtils.copyDirectoryStructure
 import org.slf4j.LoggerFactory
+import org.testng.Assert.assertEquals
 
 open class MavenTester {
     companion object {
@@ -89,7 +90,7 @@ open class MavenTester {
         goals: List<String> = listOf("clean", "test-compile"),
         quiet: Boolean = false,
         params: Properties = Properties(),
-    ): Pair<InvocationResult, List<String>> {
+    ): MutableList<String> {
         val output = mutableListOf<String>()
         val request: InvocationRequest = DefaultInvocationRequest()
         request.isBatchMode = true
@@ -101,7 +102,9 @@ open class MavenTester {
         request.baseDirectory = testDir
         request.setOutputHandler { line -> output += line }
         request.properties["graven.version"] = gravenVersion
-        request.properties["gradle.version"] = getProperty("gradle.version" /*, "8.2.1"*/)
+        getProperty("gradle.version" /*, "8.2.1"*/)?.let {
+            request.properties["gradle.version"] = it
+        }
 
         val invoker = initInvoker()
         invoker.logger =
@@ -113,7 +116,9 @@ open class MavenTester {
                 ),
                 DEBUG
             )
-        return invoker.execute(request) to output
+        val result = invoker.execute(request)
+        assertEquals(result.exitCode, 0, output.toLogFormat())
+        return output
     }
 
     val env: Map<String, String>
