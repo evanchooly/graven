@@ -1,5 +1,5 @@
-name-template: Release $NEXT_COMPLETE_VERSION
-tag-template: r$NEXT_COMPLETE_VERSION
+name-template: Release $NEXT_MINOR_VERSION
+tag-template: r$NEXT_MINOR_VERSION
 template: |
   # What's Changed (testing)
   
