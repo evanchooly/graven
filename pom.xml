@@ -27,7 +27,7 @@
 
     <properties>
         <jackson.version>2.15.2</jackson.version>
-        <maven.version>3.9.3</maven.version>
+        <maven.version>3.9.4</maven.version>
 
         <kotlin.code.style>official</kotlin.code.style>
     </properties>
