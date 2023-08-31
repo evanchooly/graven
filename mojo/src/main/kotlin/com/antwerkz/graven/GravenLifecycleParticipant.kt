@@ -25,7 +25,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom
 class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabled {
     companion object {
         val GROUPID = "com.antwerkz.graven"
-        val ARTIFACTID = "maven-plugin"
+        val ARTIFACTID = "graven-maven-plugin"
         val defaults =
             listOf(
                 TargetPlugin(
