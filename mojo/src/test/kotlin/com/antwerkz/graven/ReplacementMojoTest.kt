@@ -1,5 +1,6 @@
-package com.antwerkz.build
+package com.antwerkz.graven
 
+import com.antwerkz.graven.model.RegexReplacement
 import org.apache.maven.model.Dependency
 import org.testng.Assert.assertEquals
 import org.testng.annotations.DataProvider

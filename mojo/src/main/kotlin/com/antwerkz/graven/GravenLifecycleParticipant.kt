@@ -1,6 +1,6 @@
-package com.antwerkz.build
+package com.antwerkz.graven
 
-import com.antwerkz.build.model.TargetPlugin
+import com.antwerkz.graven.model.TargetPlugin
 import java.io.File
 import java.util.Properties
 import javax.inject.Named

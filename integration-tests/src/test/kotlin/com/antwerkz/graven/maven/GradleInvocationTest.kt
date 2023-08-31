@@ -1,6 +1,5 @@
-package com.antwerkz.build.maven
+package com.antwerkz.graven.maven
 
-import com.antwerkz.build.maven.MavenTester.Companion.initProject
 import java.io.File
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test

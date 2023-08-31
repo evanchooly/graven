@@ -1,4 +1,4 @@
-package com.antwerkz.build.maven
+package com.antwerkz.graven.maven
 
 import java.io.File
 import java.nio.charset.Charset

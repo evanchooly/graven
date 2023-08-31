@@ -1,6 +1,7 @@
-package com.antwerkz.build
+package com.antwerkz.graven
 
-import com.antwerkz.build.GradleInvocationMojo.Companion.MOJO_NAME
+import com.antwerkz.graven.GradleInvocationMojo.Companion.MOJO_NAME
+import com.antwerkz.graven.model.GradleTask
 import java.io.File
 import java.io.FileOutputStream
 import org.apache.maven.plugin.AbstractMojo

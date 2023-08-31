@@ -1,4 +1,4 @@
-package com.antwerkz.build
+package com.antwerkz.graven.model
 
 import com.fasterxml.jackson.annotation.JsonRootName
 

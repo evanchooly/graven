@@ -1,4 +1,4 @@
-package com.antwerkz.build.model
+package com.antwerkz.graven.model
 
 data class TargetPlugin(
     val groupId: String,

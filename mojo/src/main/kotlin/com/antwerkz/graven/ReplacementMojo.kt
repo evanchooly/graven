@@ -1,8 +1,8 @@
-package com.antwerkz.build
+package com.antwerkz.graven
 
+import com.antwerkz.graven.model.RegexReplacement
 import com.antwerkz.expression.RegularExpression
 import com.antwerkz.expression.toRegex
-import com.fasterxml.jackson.annotation.JsonRootName
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -119,28 +119,6 @@ class ReplacementMojo : AbstractMojo() {
         }
     }
 }
-
-@JsonRootName("replacement")
-class RegexReplacement() {
-    lateinit var pattern: String
-    lateinit var value: String
-    private val regex by lazy { Regex(pattern) }
-
-    constructor(pattern: String, value: String) : this() {
-        this.pattern = pattern
-        this.value = value
-    }
-
-    fun replace(input: String): String {
-        return input.replace(regex, value)
-    }
-
-    override fun toString(): String {
-        return "Replacement(pattern='$pattern', value='$value')"
-    }
-}
-
-data class MappedProperty(var gradleProperty: String = "", var mavenProperty: String = "")
 
 fun List<Dependency>.groupDeps(): Map<String, Dependency> {
     return groupBy { "${it.groupId}:${it.artifactId}" }.map { it.key to it.value.first() }.toMap()
