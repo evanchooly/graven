@@ -1,8 +1,8 @@
 package com.antwerkz.graven
 
-import com.antwerkz.graven.model.RegexReplacement
 import com.antwerkz.expression.RegularExpression
 import com.antwerkz.expression.toRegex
+import com.antwerkz.graven.model.RegexReplacement
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset

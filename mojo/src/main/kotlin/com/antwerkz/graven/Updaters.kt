@@ -1,11 +1,11 @@
 package com.antwerkz.graven
 
-import com.antwerkz.graven.UpdateValues.matcher
-import com.antwerkz.graven.UpdateValues.propertyMatcher
 import com.antwerkz.expression.RegularExpression.Companion.capture
 import com.antwerkz.expression.RegularExpression.Companion.oneOrMore
 import com.antwerkz.expression.RegularExpression.Companion.oneOrMoreLazy
 import com.antwerkz.expression.toRegex
+import com.antwerkz.graven.UpdateValues.matcher
+import com.antwerkz.graven.UpdateValues.propertyMatcher
 import org.apache.maven.model.Dependency
 
 @Suppress("unused")
