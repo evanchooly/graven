@@ -102,9 +102,7 @@ open class MavenTester {
         request.baseDirectory = testDir
         request.setOutputHandler { line -> output += line }
         request.properties["graven.version"] = gravenVersion
-        getProperty("gradle.version" /*, "8.2.1"*/)?.let {
-            request.properties["gradle.version"] = it
-        }
+        getProperty("gradle.version")?.let { request.properties["gradle.version"] = it }
 
         val invoker = initInvoker()
         invoker.logger =

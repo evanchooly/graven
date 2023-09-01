@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gradle: [ 8.2.1, 8.1.1, 8.0.2, 7.6.2 ]
+        gradle: [ 8.3, 8.2.1, 8.1.1, 8.0.2, 7.6.2 ]
     uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
       reuseBuild: true
