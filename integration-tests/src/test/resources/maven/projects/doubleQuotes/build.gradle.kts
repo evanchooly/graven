@@ -1,5 +1,3 @@
-import jdk.tools.jlink.resources.plugins
-
 buildscript {
     dependencies {
         classpath("org.apache.maven:maven-model:2.3.1")

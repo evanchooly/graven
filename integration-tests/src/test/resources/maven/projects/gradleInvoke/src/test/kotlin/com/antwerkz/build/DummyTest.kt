@@ -1,5 +1,3 @@
 package com.antwerkz.graven
 
-class DummyTest  {
-
-}
+class DummyTest {}
