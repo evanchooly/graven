@@ -11,6 +11,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.apache.maven.shared.invoker.DefaultInvocationRequest
 import org.apache.maven.shared.invoker.DefaultInvoker
 import org.apache.maven.shared.invoker.InvocationRequest
+import org.apache.maven.shared.invoker.InvocationResult
 import org.codehaus.plexus.util.FileUtils.copyDirectoryStructure
 import org.slf4j.LoggerFactory
 import org.testng.Assert
@@ -65,7 +66,14 @@ open class MavenTester {
     }
 
     fun initInvoker(projectRoot: File, debug: Boolean): DefaultInvoker {
-        val invoker = RunningInvoker(projectRoot, debug)
+        val invoker =
+            object : DefaultInvoker() {
+                override fun execute(request: InvocationRequest): InvocationResult {
+                    env.forEach { request.addShellEnvironment(it.key, it.value) }
+                    return super.execute(request)
+                }
+            }
+        //            RunningInvoker(projectRoot, debug)
         invoker.mavenHome = mavenHome
         invoker.localRepositoryDirectory =
             File(
@@ -132,6 +140,13 @@ open class MavenTester {
             "Should have found the ${kind} artifact: ${artifact.absolutePath}."
         )
     }
+
+    val env: Map<String, String>
+        get() {
+            val env = mutableMapOf<String, String>()
+            getProperty("mavenOpts")?.let { env["MAVEN_OPTS"] = it }
+            return env
+        }
 }
 
 fun Properties.toLogFormat(): String =
