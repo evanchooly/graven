@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="graven-parent [install]" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="graven-parent [clean, install] -- skipTests" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -11,6 +11,7 @@
           </option>
           <option name="goals">
             <list>
+              <option value="clean" />
               <option value="install" />
               <option value="-DskipTests" />
             </list>

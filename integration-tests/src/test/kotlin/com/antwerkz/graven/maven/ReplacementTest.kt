@@ -5,7 +5,7 @@ import java.nio.charset.Charset
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
-class ReplacementMojoTest : MavenTester() {
+class ReplacementTest : MavenTester() {
     @Test
     fun doubleQuoteUpdates() {
         val testDir = initProject("doubleQuotes")
@@ -47,8 +47,8 @@ class ReplacementMojoTest : MavenTester() {
 
         val lines = File(testDir, "gradle.properties").readLines(Charset.forName("UTF-8"))
 
-        find(lines, "guava.version=31.1-jre")
-        find(lines, "testng.version=7.8.0")
+        find(lines, "guava.version = 31.1-jre")
+        find(lines, "testng.version = 7.8.0")
     }
 
     @Test

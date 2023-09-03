@@ -1,23 +1,19 @@
 package com.antwerkz.graven.maven
 
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
-import java.io.FileOutputStream
 import java.io.FileReader
 import java.io.IOException
-import java.io.PrintStream
 import java.lang.System.getProperty
 import java.util.Properties
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.apache.maven.shared.invoker.DefaultInvocationRequest
 import org.apache.maven.shared.invoker.DefaultInvoker
 import org.apache.maven.shared.invoker.InvocationRequest
-import org.apache.maven.shared.invoker.InvocationResult
-import org.apache.maven.shared.invoker.Invoker
-import org.apache.maven.shared.invoker.InvokerLogger.DEBUG
-import org.apache.maven.shared.invoker.PrintStreamLogger
 import org.codehaus.plexus.util.FileUtils.copyDirectoryStructure
 import org.slf4j.LoggerFactory
+import org.testng.Assert
 import org.testng.Assert.assertEquals
 
 open class MavenTester {
@@ -68,14 +64,8 @@ open class MavenTester {
         }
     }
 
-    fun initInvoker(): Invoker {
-        val invoker: Invoker =
-            object : DefaultInvoker() {
-                override fun execute(request: InvocationRequest): InvocationResult {
-                    env.forEach { request.addShellEnvironment(it.key, it.value) }
-                    return super.execute(request)
-                }
-            }
+    fun initInvoker(projectRoot: File, debug: Boolean): DefaultInvoker {
+        val invoker = RunningInvoker(projectRoot, debug)
         invoker.mavenHome = mavenHome
         invoker.localRepositoryDirectory =
             File(
@@ -89,9 +79,10 @@ open class MavenTester {
         testDir: File,
         goals: List<String> = listOf("clean", "test-compile"),
         quiet: Boolean = false,
+        debug: Boolean = false,
         params: Properties = Properties(),
-    ): MutableList<String> {
-        val output = mutableListOf<String>()
+    ) {
+        val output = File(testDir, "maven-log.txt")
         val request: InvocationRequest = DefaultInvocationRequest()
         request.isBatchMode = true
         request.isDebug = false
@@ -100,31 +91,50 @@ open class MavenTester {
         request.setQuiet(quiet)
         request.goals = goals
         request.baseDirectory = testDir
-        request.setOutputHandler { line -> output += line }
+        request.setOutputHandler { line -> output.appendText(line + "\n") }
         request.properties["graven.version"] = gravenVersion
         getProperty("gradle.version")?.let { request.properties["gradle.version"] = it }
 
-        val invoker = initInvoker()
-        invoker.logger =
-            PrintStreamLogger(
-                PrintStream(
-                    FileOutputStream(File(testDir, "maven-${testDir.name}.log")),
-                    true,
-                    "UTF-8"
-                ),
-                DEBUG
-            )
-        val result = invoker.execute(request)
-        assertEquals(result.exitCode, 0, output.toLogFormat())
-        return output
+        assertEquals(
+            initInvoker(testDir, debug).execute(request).exitCode,
+            0,
+            "Maven returned a non-zero exit code"
+        )
     }
 
-    val env: Map<String, String>
-        get() {
-            val env = mutableMapOf<String, String>()
-            getProperty("mavenOpts")?.let { env["MAVEN_OPTS"] = it }
-            return env
+    protected fun loadValue(testDir: File, fileName: String, propertyName: String): String {
+        val settings = Properties()
+        val file = File(testDir, fileName)
+        settings.load(FileInputStream(file))
+        var property = settings.getProperty(propertyName)
+        Assert.assertNotNull(
+            property,
+            "Did not find a ${propertyName} in ${file.absolutePath}: ${settings.toLogFormat()}"
+        )
+
+        if (property.startsWith('"')) {
+            property = property.drop(1).dropLast(1)
         }
+        return property
+    }
+
+    protected fun findArtifact(testDir: File, projectName: String, version: String, kind: String) {
+        val classifier =
+            when (kind) {
+                "main" -> ""
+                "javadoc" -> "-javadoc"
+                "sources" -> "-sources"
+                else -> TODO()
+            }
+        val artifact = File(testDir, "build/libs/$projectName-${version}${classifier}.jar")
+        Assert.assertTrue(
+            artifact.exists(),
+            "Should have found the ${kind} artifact: ${artifact.absolutePath}."
+        )
+    }
 }
+
+fun Properties.toLogFormat(): String =
+    keys.sortedBy { it.toString() }.joinToString("\n", transform = { it -> "$it: ${this[it]}" })
 
 fun List<String>.toLogFormat() = joinToString("\n", prefix = "\n")

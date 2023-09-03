@@ -1,6 +1,7 @@
 package com.antwerkz.graven.maven;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.shared.invoker.*;
 import org.apache.maven.shared.utils.cli.CommandLineException;
@@ -103,7 +104,11 @@ public class MavenProcessInvoker extends DefaultInvoker {
                     e.printStackTrace();
                 }
             }).start();
-
+            try {
+                p.waitFor(30, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                throw new CommandLineException(e.getMessage(), e);
+            }
             return p;
         }
     }

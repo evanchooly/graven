@@ -2,6 +2,7 @@ package com.antwerkz.graven
 
 import com.antwerkz.graven.model.TargetPlugin
 import java.io.File
+import java.nio.file.Files
 import java.util.Properties
 import javax.inject.Named
 import javax.inject.Singleton
@@ -16,12 +17,12 @@ import org.codehaus.plexus.logging.LogEnabled
 import org.codehaus.plexus.logging.Logger
 import org.codehaus.plexus.util.xml.Xpp3Dom
 
+@Singleton
 @Component(
     role = AbstractMavenLifecycleParticipant::class,
     hint = "com.antwerkz.build.GravenLifecycleParticipant"
 )
 @Named("com.antwerkz.build.GravenLifecycleParticipant")
-@Singleton
 class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabled {
     companion object {
         val GROUPID = "com.antwerkz.graven"
@@ -60,26 +61,39 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
 
     override fun afterProjectsRead(session: MavenSession) {
         session.projects.forEach { project ->
-            val model = project.model
-            updateClean(model)
-            textReplacements(model)
-            applyDefaultPluginReplacements(project)
-            attachJar(project, model)
+            val wrapper = File(project.basedir, "gradle/wrapper/gradle-wrapper.properties")
+            if (wrapper.exists()) {
+                val model = project.model
+                updateClean(model)
+                textReplacements(model)
+                applyDefaultPluginReplacements(project)
+                attachJars(project, model)
+            }
         }
     }
 
-    private fun attachJar(project: MavenProject, model: Model) {
+    override fun afterSessionEnd(session: MavenSession) {
+        session.projects.forEach { project ->
+            val logDir = File(project.basedir, "build/graven")
+            if (logDir.exists()) {
+                logDir
+                    .listFiles { file -> file.name.endsWith("-error.log") }
+                    .filter { Files.size(it.toPath()) == 0L }
+                    .forEach {
+                        logger?.debug("${it.absolutePath} is empty. Removing.")
+                        it.delete()
+                    }
+            }
+        }
+    }
+
+    private fun attachJars(project: MavenProject, model: Model) {
         logger?.info("Attaching gradle artifacts")
         val gradleName = loadGradleName(project)
-        val plugins = model.build.plugins
-        val plugin = Plugin()
-        plugins.add(plugin)
-        plugin.groupId = "org.codehaus.mojo"
-        plugin.artifactId = "build-helper-maven-plugin"
-        plugin.version = "3.4.0"
+        val plugin = model.findOrInjectPlugin("org.codehaus.mojo", "build-helper-maven-plugin")
         plugin.executions.add(
             PluginExecution().also {
-                it.id = "attach-artifacts"
+                it.id = "graven-attach-artifacts"
                 it.phase = "package"
                 it.goals.add("attach-artifact")
                 it.configuration =
@@ -89,19 +103,25 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
                             "artifacts",
                             dom(
                                 "artifact",
-                                dom("file", "build/libs/${gradleName}.jar"),
-                                dom("type", "jar")
+                                dom(
+                                    "file",
+                                    "${project.basedir}/build/libs/${gradleName}-${project.version}.jar"
+                                ),
                             ),
                             dom(
                                 "artifact",
-                                dom("file", "build/libs/${gradleName}-javadoc.jar"),
-                                dom("type", "jar"),
+                                dom(
+                                    "file",
+                                    "${project.basedir}/build/libs/${gradleName}-${project.version}-javadoc.jar"
+                                ),
                                 dom("classifier", "javadoc")
                             ),
                             dom(
                                 "artifact",
-                                dom("file", "build/libs/${gradleName}-sources.jar"),
-                                dom("type", "jar"),
+                                dom(
+                                    "file",
+                                    "${project.basedir}/build/libs/${gradleName}-${project.version}-sources.jar"
+                                ),
                                 dom("classifier", "sources")
                             )
                         )
@@ -120,20 +140,24 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
                     "settings.gradle must contain the property 'rootProject.name'"
                 ))
                 as String
-        if (name.startsWith('"')) name = name.drop(1).dropLast(1)
+        if (name.startsWith('"') || name.startsWith('\'')) name = name.drop(1).dropLast(1)
         return name
     }
 
     private fun updateClean(model: Model) {
-        val clean = TargetPlugin("org.apache.maven.plugins", "maven-clean-plugin", "", "", "")
-        val target = findOrInjectPlugin(model, clean)
-        target.executions.add(
-            PluginExecution().also {
-                it.id = "graven-clean-build-folder"
-                it.configuration =
-                    dom("configuration", dom("filesets", dom("fileset", dom("directory", "build"))))
-            }
-        )
+        model
+            .findOrInjectPlugin("org.apache.maven.plugins", "maven-clean-plugin")
+            .executions
+            .add(
+                PluginExecution().also {
+                    it.id = "graven-clean-build-folder"
+                    it.configuration =
+                        dom(
+                            "configuration",
+                            dom("filesets", dom("fileset", dom("directory", "build")))
+                        )
+                }
+            )
     }
 
     private fun textReplacements(model: Model) {
@@ -152,7 +176,8 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
     private fun applyDefaultPluginReplacements(project: MavenProject) {
         findGravenPlugin(project.model)?.let { plugin ->
             defaults.forEach { targetPlugin ->
-                val target = findOrInjectPlugin(project.model, targetPlugin)
+                val target =
+                    project.model.findOrInjectPlugin(targetPlugin.groupId, targetPlugin.artifactId)
                 val execution =
                     target.executions.firstOrNull { it.id == targetPlugin.executionId }
                         ?: PluginExecution().also {
@@ -181,20 +206,20 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
             (GROUPID == plugin.groupId) && (ARTIFACTID == plugin.artifactId)
         }
 
-    private fun findOrInjectPlugin(model: Model, target: TargetPlugin): Plugin {
-        return findPlugin(model, target) ?: injectPlugin(model, target)
+    private fun Model.findOrInjectPlugin(groupId: String, artifactId: String): Plugin {
+        return findPlugin(groupId, artifactId) ?: injectPlugin(groupId, artifactId)
     }
 
-    private fun findPlugin(model: Model, target: TargetPlugin) =
-        model.build.plugins.firstOrNull { plugin ->
-            (target.groupId == plugin.groupId) && (target.artifactId == plugin.artifactId)
+    private fun Model.findPlugin(groupId: String, artifactId: String) =
+        build.plugins.firstOrNull { plugin ->
+            (groupId == plugin.groupId) && (artifactId == plugin.artifactId)
         }
 
-    private fun injectPlugin(model: Model, target: TargetPlugin): Plugin {
+    private fun Model.injectPlugin(groupId: String, artifactId: String): Plugin {
         val plugin = Plugin()
-        model.build.plugins.add(plugin)
-        plugin.groupId = target.groupId
-        plugin.artifactId = target.artifactId
+        build.plugins.add(plugin)
+        plugin.groupId = groupId
+        plugin.artifactId = artifactId
 
         return plugin
     }

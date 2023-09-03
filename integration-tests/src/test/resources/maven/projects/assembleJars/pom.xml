@@ -5,7 +5,7 @@
 
     <groupId>com.antwerkz.graven</groupId>
     <artifactId>com.antwerkz.graven.gradle.plugin.test</artifactId>
-    <version>123</version>
+    <version>1.2.3</version>
     <packaging>pom</packaging>
 
     <properties>
