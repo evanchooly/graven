@@ -1,0 +1,279 @@
+[INFO] Scanning for projects...
+[INFO] Inspecting build with total of 1 modules...
+[INFO] Installing Nexus Staging features:
+[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin
+[INFO] 
+[INFO] --------------< com.antwerkz.graven:graven-maven-plugin >---------------
+[INFO] Building graven-maven-plugin 0.4.3
+[INFO]   from pom.xml
+[INFO] ----------------------------[ maven-plugin ]----------------------------
+[INFO] 
+[INFO] --- enforcer:3.4.0:enforce (enforce-environment-variable-is-set) @ graven-maven-plugin ---
+[INFO] Rule 0: org.apache.maven.enforcer.rules.property.RequireEnvironmentVariable passed
+[INFO] Rule 1: org.apache.maven.enforcer.rules.property.RequireEnvironmentVariable passed
+[INFO] Rule 2: org.apache.maven.enforcer.rules.property.RequireEnvironmentVariable passed
+[INFO] 
+[INFO] --- build-helper:3.4.0:add-source (attach-kotlin-sources) @ graven-maven-plugin ---
+[INFO] Source directory: /home/evanchooly/dev/graven/mojo/src/main/kotlin added.
+[INFO] 
+[INFO] --- plugin:3.9.0:helpmojo (help-goal) @ graven-maven-plugin ---
+[INFO] 
+[INFO] --- copy-rename:1.0.1:copy (copy-license-file) @ graven-maven-plugin ---
+[INFO] Copied /home/evanchooly/dev/graven/mojo/LICENSE to /home/evanchooly/dev/graven/mojo/target/classes/META-INF/LICENSE-graven-maven-plugin
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ graven-maven-plugin ---
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- kotlin:1.9.10:compile (compile) @ graven-maven-plugin ---
+[WARNING] Source root doesn't exist: /home/evanchooly/dev/graven/mojo/src/main/java
+[WARNING] /home/evanchooly/dev/graven/mojo/src/main/kotlin/com/antwerkz/graven/Updaters.kt: (92, 25) Parameter 'quote' is never used
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (java-compile) @ graven-maven-plugin ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- plugin:3.9.0:descriptor (default-descriptor) @ graven-maven-plugin ---
+[INFO] Using 'UTF-8' encoding to read mojo source files.
+[INFO] java-annotations mojo extractor found 3 mojo descriptors.
+[INFO] java-javadoc mojo extractor found 0 mojo descriptor.
+[INFO] ant mojo extractor found 0 mojo descriptor.
+[INFO] bsh mojo extractor found 0 mojo descriptor.
+[INFO] 
+[INFO] --- plugin:3.9.0:descriptor (mojo-descriptor) @ graven-maven-plugin ---
+[INFO] Using 'UTF-8' encoding to read mojo source files.
+[INFO] java-annotations mojo extractor found 3 mojo descriptors.
+[INFO] 
+[INFO] --- sisu:0.9.0.M2:main-index (generate-index) @ graven-maven-plugin ---
+[INFO] 
+[INFO] --- build-helper:3.4.0:add-test-source (attach-test-kotlin-sources) @ graven-maven-plugin ---
+[INFO] Test Source directory: /home/evanchooly/dev/graven/mojo/src/test/kotlin added.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ graven-maven-plugin ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- kotlin:1.9.10:test-compile (test-compile) @ graven-maven-plugin ---
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (java-test-compile) @ graven-maven-plugin ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ graven-maven-plugin ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- dokka:1.8.20:dokka (default) @ graven-maven-plugin ---
+[INFO] Initializing plugins
+[INFO] Loaded plugins: [org.jetbrains.dokka.base.DokkaBase]
+[INFO] Loaded: [
+	ExtensionPoint: org.jetbrains.dokka.CoreExtensions/postActions,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/externalClasslikesTranslator,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/externalDocumentablesProvider,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/immediateHtmlCommandConsumer,
+	ExtensionPoint: org.jetbrains.dokka.CoreExtensions/pageTransformer,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/htmlPreprocessors,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/outputWriter,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/externalLocationProviderFactory,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/locationProviderFactory,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/kotlinAnalysis,
+	ExtensionPoint: org.jetbrains.dokka.CoreExtensions/renderer,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/pageMergerStrategy,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/commentsToContentConverter,
+	ExtensionPoint: org.jetbrains.dokka.CoreExtensions/documentableToPageTranslator,
+	ExtensionPoint: org.jetbrains.dokka.CoreExtensions/documentableTransformer,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/signatureProvider,
+	ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/preMergeDocumentableTransformer,
+	ExtensionPoint: org.jetbrains.dokka.CoreExtensions/documentableMerger,
+	ExtensionPoint: org.jetbrains.dokka.CoreExtensions/sourceToDocumentableTranslator,
+	ExtensionPoint: org.jetbrains.dokka.CoreExtensions/generation,
+	Extension: org.jetbrains.dokka.base.DokkaBase/disposeKotlinAnalysisPostAction,
+	Extension: org.jetbrains.dokka.base.DokkaBase/defaultExternalClasslikesTranslator,
+	Extension: org.jetbrains.dokka.base.DokkaBase/defaultExternalDocumentablesProvider,
+	Extension: org.jetbrains.dokka.base.DokkaBase/pathToRootConsumer,
+	Extension: org.jetbrains.dokka.base.DokkaBase/replaceVersionConsumer,
+	Extension: org.jetbrains.dokka.base.DokkaBase/resolveLinkConsumer,
+	Extension: org.jetbrains.dokka.base.DokkaBase/defaultSamplesTransformer,
+	Extension: org.jetbrains.dokka.base.DokkaBase/sourceSetMerger,
+	Extension: org.jetbrains.dokka.base.DokkaBase/pageMerger,
+	Extension: org.jetbrains.dokka.base.DokkaBase/rootCreator,
+	Extension: org.jetbrains.dokka.base.DokkaBase/sourcesetDependencyAppender,
+	Extension: org.jetbrains.dokka.base.DokkaBase/packageListCreator,
+	Extension: org.jetbrains.dokka.base.DokkaBase/assetsInstaller,
+	Extension: org.jetbrains.dokka.base.DokkaBase/stylesInstaller,
+	Extension: org.jetbrains.dokka.base.DokkaBase/scriptsInstaller,
+	Extension: org.jetbrains.dokka.base.DokkaBase/customResourceInstaller,
+	Extension: org.jetbrains.dokka.base.DokkaBase/navigationPageInstaller,
+	Extension: org.jetbrains.dokka.base.DokkaBase/sourceLinksTransformer,
+	Extension: org.jetbrains.dokka.base.DokkaBase/baseSearchbarDataInstaller,
+	Extension: org.jetbrains.dokka.base.DokkaBase/fileWriter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/dokkaLocationProvider,
+	Extension: org.jetbrains.dokka.base.DokkaBase/javadocLocationProvider,
+	Extension: org.jetbrains.dokka.base.DokkaBase/locationProvider,
+	Extension: org.jetbrains.dokka.base.DokkaBase/defaultKotlinAnalysis,
+	Extension: org.jetbrains.dokka.base.DokkaBase/htmlRenderer,
+	Extension: org.jetbrains.dokka.base.DokkaBase/sameMethodNameMerger,
+	Extension: org.jetbrains.dokka.base.DokkaBase/fallbackMerger,
+	Extension: org.jetbrains.dokka.base.DokkaBase/docTagToContentConverter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/documentableToPageTranslator,
+	Extension: org.jetbrains.dokka.base.DokkaBase/extensionsExtractor,
+	Extension: org.jetbrains.dokka.base.DokkaBase/undocumentedCodeReporter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/inheritorsExtractor,
+	Extension: org.jetbrains.dokka.base.DokkaBase/actualTypealiasAdder,
+	Extension: org.jetbrains.dokka.base.DokkaBase/kotlinSignatureProvider,
+	Extension: org.jetbrains.dokka.base.DokkaBase/modulesAndPackagesDocumentation,
+	Extension: org.jetbrains.dokka.base.DokkaBase/kotlinArrayDocumentableReplacer,
+	Extension: org.jetbrains.dokka.base.DokkaBase/inheritedEntriesVisbilityFilter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/obviousFunctionsVisbilityFilter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/documentableVisibilityFilter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/suppressedBySuppressTagDocumentableFilter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/suppressedDocumentableFilter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/deprecatedDocumentableFilter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/emptyPackagesFilter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/emptyModulesFilter,
+	Extension: org.jetbrains.dokka.base.DokkaBase/documentableMerger,
+	Extension: org.jetbrains.dokka.base.DokkaBase/psiToDocumentableTranslator,
+	Extension: org.jetbrains.dokka.base.DokkaBase/descriptorToDocumentableTranslator,
+	Extension: org.jetbrains.dokka.base.DokkaBase/singleGeneration
+]
+[INFO] Suppressed: [
+
+]
+[INFO] Dokka is performing: documentation for graven-maven-plugin
+[INFO] Validity check
+[INFO] Creating documentation models
+[INFO] error: source file or directory not found: /home/evanchooly/dev/graven/mojo/src/main/java
+[INFO] logging: loading modules: [java.se, jdk.accessibility, jdk.attach, jdk.compiler, jdk.dynalink, jdk.httpserver, jdk.incubator.foreign, jdk.incubator.vector, jdk.jartool, jdk.javadoc, jdk.jconsole, jdk.jdi, jdk.jfr, jdk.jshell, jdk.jsobject, jdk.management, jdk.management.jfr, jdk.net, jdk.nio.mapmode, jdk.sctp, jdk.security.auth, jdk.security.jgss, jdk.unsupported, jdk.unsupported.desktop, jdk.xml.dom, java.base, java.compiler, java.datatransfer, java.desktop, java.xml, java.instrument, java.logging, java.management, java.management.rmi, java.rmi, java.naming, java.net.http, java.prefs, java.scripting, java.security.jgss, java.security.sasl, java.sql, java.transaction.xa, java.sql.rowset, java.xml.crypto, jdk.internal.jvmstat, jdk.management.agent, jdk.jdwp.agent, jdk.internal.ed, jdk.internal.le, jdk.internal.opt]
+[INFO] Transforming documentation model before merging
+[INFO] Merging documentation models
+[INFO] Transforming documentation model after merging
+[INFO] Creating pages
+[INFO] Transforming pages
+[INFO] Rendering
+[INFO] Running post-actions
+[INFO] Unused extension points found: ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/externalClasslikesTranslator, ExtensionPoint: org.jetbrains.dokka.base.DokkaBase/externalDocumentablesProvider
+[INFO] Generation completed successfully
+[INFO] 
+[INFO] 
+
+ === TIME MEASUREMENT ===
+
+[INFO]                            Initializing plugins:  251
+[INFO]                                  Validity check:    0
+[INFO]                   Creating documentation models: 2179
+[INFO] Transforming documentation model before merging:   19
+[INFO]                    Merging documentation models:    3
+[INFO]  Transforming documentation model after merging:   15
+[INFO]                                  Creating pages:   77
+[INFO]                              Transforming pages:   11
+[INFO]                                       Rendering: 1496
+[INFO]                            Running post-actions:    3
+[INFO] 
+[INFO] --- jar:3.3.0:jar (default-jar) @ graven-maven-plugin ---
+[INFO] Building jar: /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3.jar
+[INFO] 
+[INFO] --- plugin:3.9.0:addPluginArtifactMetadata (default-addPluginArtifactMetadata) @ graven-maven-plugin ---
+[INFO] 
+[INFO] --- jar:3.3.0:jar (default) @ graven-maven-plugin ---
+[INFO] Building jar: /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-javadoc.jar
+[INFO] 
+[INFO] --- javadoc:3.5.0:jar (attach-javadocs) @ graven-maven-plugin ---
+[INFO] Configuration changed, re-generating javadoc.
+[INFO] Building jar: /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-javadoc.jar
+[INFO] 
+[INFO] >>> source:3.3.0:jar (attach-sources) > generate-sources @ graven-maven-plugin >>>
+[INFO] 
+[INFO] --- enforcer:3.4.0:enforce (enforce-environment-variable-is-set) @ graven-maven-plugin ---
+[INFO] 
+[INFO] --- build-helper:3.4.0:add-source (attach-kotlin-sources) @ graven-maven-plugin ---
+[INFO] Source directory: /home/evanchooly/dev/graven/mojo/src/main/kotlin added.
+[INFO] 
+[INFO] --- plugin:3.9.0:helpmojo (help-goal) @ graven-maven-plugin ---
+[INFO] 
+[INFO] --- copy-rename:1.0.1:copy (copy-license-file) @ graven-maven-plugin ---
+[INFO] Copied /home/evanchooly/dev/graven/mojo/LICENSE to /home/evanchooly/dev/graven/mojo/target/classes/META-INF/LICENSE-graven-maven-plugin
+[INFO] 
+[INFO] <<< source:3.3.0:jar (attach-sources) < generate-sources @ graven-maven-plugin <<<
+[INFO] 
+[INFO] 
+[INFO] --- source:3.3.0:jar (attach-sources) @ graven-maven-plugin ---
+[INFO] 
+[INFO] --- gpg:3.1.0:sign (default) @ graven-maven-plugin ---
+[INFO] Signing 5 files with default secret key.
+gpg: using "C322F612" as default secret key for signing
+gpg: using "C322F612" as default secret key for signing
+gpg: using "C322F612" as default secret key for signing
+gpg: using "C322F612" as default secret key for signing
+[WARNING] artifact com.antwerkz.graven:graven-maven-plugin:jar.asc:javadoc:0.4.3 already attached, replace previous instance
+gpg: using "C322F612" as default secret key for signing
+[INFO] 
+[INFO] --- install:3.1.1:install (default-install) @ graven-maven-plugin ---
+[INFO] Installing /home/evanchooly/dev/graven/mojo/pom.xml to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.pom
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3.jar to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.jar
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-javadoc.jar to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-javadoc.jar to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-sources.jar to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-sources.jar
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3.jar.asc to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.jar.asc
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3.pom.asc to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.pom.asc
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-javadoc.jar.asc to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar.asc
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-sources.jar.asc to /home/evanchooly/.m2/repository/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-sources.jar.asc
+[INFO] 
+[INFO] --- nexus-staging:1.6.13:deploy (injected-nexus-deploy) @ graven-maven-plugin ---
+[INFO] Performing local staging (local stagingDirectory="/home/evanchooly/dev/graven/mojo/target/nexus-staging/staging")...
+[INFO]  + Using server credentials "central" from Maven settings.
+[INFO]  * Connected to Nexus at https://oss.sonatype.org:443/, is version 2.15.1-02 and edition "Professional"
+[INFO]  * Using staging profile ID "9f12a651154d4" (matched by Nexus).
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3.jar to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.jar
+[INFO] Installing /home/evanchooly/dev/graven/mojo/pom.xml to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.pom
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-javadoc.jar to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-javadoc.jar to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-sources.jar to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-sources.jar
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3.jar.asc to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.jar.asc
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3.pom.asc to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.pom.asc
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-javadoc.jar.asc to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar.asc
+[INFO] Installing /home/evanchooly/dev/graven/mojo/target/graven-maven-plugin-0.4.3-sources.jar.asc to /home/evanchooly/dev/graven/mojo/target/nexus-staging/staging/9f12a651154d4/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-sources.jar.asc
+[INFO] Performing remote staging...
+[INFO] 
+[INFO]  * Remote staging into staging profile ID "9f12a651154d4"
+[INFO]  * Created staging repository with ID "comantwerkz-1187".
+[INFO]  * Staging repository at https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187
+[INFO]  * Uploading locally staged artifacts to profile com.antwerkz
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-sources.jar.asc
+Progress (1): 833 B                   Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-sources.jar.asc (833 B at 7.7 kB/s)
+Downloading from central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/maven-metadata.xml
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/maven-metadata.xml
+Progress (1): 318 B                   Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/maven-metadata.xml (318 B at 3.5 kB/s)
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.jar.asc
+Progress (1): 833 B                   Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.jar.asc (833 B at 27 kB/s)
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-sources.jar
+Progress (1): 14 kB                   Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-sources.jar (14 kB at 138 kB/s)
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar.asc
+Progress (1): 833 B                   Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar.asc (833 B at 27 kB/s)
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar
+Progress (1): 33/86 kBProgress (1): 66/86 kBProgress (1): 86 kB                      Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3-javadoc.jar (86 kB at 710 kB/s)
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.jar
+Progress (1): 33/83 kBProgress (1): 66/83 kBProgress (1): 83 kB                      Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.jar (83 kB at 742 kB/s)
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.pom
+Progress (1): 5.1 kB                    Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.pom (5.1 kB at 37 kB/s)
+Downloading from central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/maven-metadata.xml
+Downloading from central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/maven-metadata.xml
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/maven-metadata.xml
+Progress (1): 234 B                   Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/maven-metadata.xml (234 B at 2.3 kB/s)
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/maven-metadata.xml
+Progress (1): 234 B                   Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/maven-metadata.xml (234 B at 2.5 kB/s)
+Uploading to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.pom.asc
+Progress (1): 833 B                   Uploaded to central: https://oss.sonatype.org:443/service/local/staging/deployByRepositoryId/comantwerkz-1187/com/antwerkz/graven/graven-maven-plugin/0.4.3/graven-maven-plugin-0.4.3.pom.asc (833 B at 29 kB/s)
+[INFO]  * Upload of locally staged artifacts finished.
+[INFO]  * Closing staging repository with ID "comantwerkz-1187".
+
+Waiting for operation to complete...
+.............
+
+[INFO] Remote staged 1 repositories, finished with success.
+[INFO] Remote staging repositories are being released...
+
+Waiting for operation to complete...
+......
+
+[INFO] Remote staging repositories released.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:22 min
+[INFO] Finished at: 2023-09-03T19:46:24-04:00
+[INFO] ------------------------------------------------------------------------

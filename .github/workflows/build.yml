@@ -36,7 +36,7 @@ jobs:
     needs:
       - Build
       - Test
-    uses: evanchooly/workflows/.github/workflows/release.yml@master
+    uses: evanchooly/workflows/.github/workflows/jreleaser.yml@master
     with:
       java: 17
     secrets:
