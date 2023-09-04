@@ -12,7 +12,7 @@
 
     <groupId>com.antwerkz.graven</groupId>
     <artifactId>graven-parent</artifactId>
-    <version>0.4.7-SNAPSHOT</version>
+    <version>0.4.7</version>
     <packaging>pom</packaging>
 
     <description>
@@ -81,6 +81,18 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jreleaser</groupId>
+                    <artifactId>jreleaser-maven-plugin</artifactId>
+                    <version>1.8.0</version>
+                    <inherited>false</inherited>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
     <modules>
         <module>mojo</module>
         <module>integration-tests</module>
