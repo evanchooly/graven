@@ -12,7 +12,7 @@
 
     <groupId>com.antwerkz.graven</groupId>
     <artifactId>graven-parent</artifactId>
-    <version>0.4.6</version>
+    <version>0.4.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>
