@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.antwerkz</groupId>
         <artifactId>antwerkz-parent</artifactId>
-        <version>27</version>
+        <version>28-SNAPSHOT</version>
     </parent>
 
     <groupId>com.antwerkz.graven</groupId>
@@ -81,18 +81,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.jreleaser</groupId>
-                    <artifactId>jreleaser-maven-plugin</artifactId>
-                    <version>1.8.0</version>
-                    <inherited>false</inherited>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
     <modules>
         <module>mojo</module>
         <module>integration-tests</module>
