@@ -14,6 +14,7 @@
     <artifactId>graven-parent</artifactId>
     <version>0.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <url>https://github.com/evanchooly/graven</url>
 
     <description>
         This plugin drives a gradle build from maven allowing for single-lifecycle development on mixed build projects
