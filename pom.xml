@@ -7,12 +7,12 @@
     <parent>
         <groupId>com.antwerkz</groupId>
         <artifactId>antwerkz-parent</artifactId>
-        <version>27</version>
+        <version>28</version>
     </parent>
 
     <groupId>com.antwerkz.graven</groupId>
     <artifactId>graven-parent</artifactId>
-    <version>0.4.8-SNAPSHOT</version>
+    <version>0.4.9-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>
