@@ -7,6 +7,7 @@ import java.io.FileReader
 import java.io.IOException
 import java.lang.System.getProperty
 import java.util.Properties
+import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.apache.maven.shared.invoker.DefaultInvocationRequest
 import org.apache.maven.shared.invoker.DefaultInvoker
@@ -31,13 +32,15 @@ open class MavenTester {
                 .first()
         }
 
-        val gravenVersion: String by lazy { pomVersion() }
-
-        private fun pomVersion(): String {
+        val model: Model by lazy {
             val reader = MavenXpp3Reader()
-            val model = reader.read(FileReader("../pom.xml"))
-            return model.version
+            val read = reader.read(FileReader("../mojo/pom.xml"))
+            read
         }
+
+        val gravenGroupId: String by lazy { model.parent.groupId }
+        val gravenArtifactid: String by lazy { model.artifactId }
+        val gravenVersion: String by lazy { model.parent.version }
 
         fun getTargetDir(name: String): File {
             return File("target/test-projects/$name")
@@ -100,6 +103,8 @@ open class MavenTester {
         request.goals = goals
         request.baseDirectory = testDir
         request.setOutputHandler { line -> output.appendText(line + "\n") }
+        request.properties["graven.groupId"] = gravenGroupId
+        request.properties["graven.artifactId"] = gravenArtifactid
         request.properties["graven.version"] = gravenVersion
         getProperty("gradle.version")?.let { request.properties["gradle.version"] = it }
 

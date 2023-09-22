@@ -4,22 +4,24 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.antwerkz.graven</groupId>
-    <artifactId>doubleQuotes</artifactId>
-    <version>infinity</version>
+    <artifactId>com.antwerkz.graven.gradle.plugin.test</artifactId>
+    <version>1.2.3</version>
     <packaging>pom</packaging>
 
     <properties>
         <kotlin.version>1.8.10</kotlin.version>
         <morphia.version>2.3.5</morphia.version>
-        <critter.version>4.4.4</critter.version>
+        <testng.version>7.8.0</testng.version>
         <maven.model>3.9.1</maven.model>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.14.1</version>
+            <version>2.15.1</version>
         </dependency>
         <dependency>
             <groupId>dev.morphia.morphia</groupId>
@@ -40,14 +42,6 @@
                 <artifactId>${graven.artifactId}</artifactId>
                 <version>${graven.version}</version>
                 <extensions>true</extensions>
-                <configuration>
-                    <replacements>
-                        <replacement>
-                            <pattern>(kotlin\("jvm"\).*)</pattern>
-                            <value>kotlin("jvm") version "${kotlin.version}"</value>
-                        </replacement>
-                    </replacements>
-                </configuration>
             </plugin>
         </plugins>
     </build>

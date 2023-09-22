@@ -123,6 +123,7 @@ class ReplacementMojo : AbstractMojo() {
 
     fun updateProjectVersion() {
         val file = File(project.basedir, "gradle.properties")
+        if (!file.exists()) return
         val versionMatcher =
             RegularExpression.startOfInput()
                 .string("version")
