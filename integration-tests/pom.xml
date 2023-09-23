@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.antwerkz.graven</groupId>
         <artifactId>graven-parent</artifactId>
-        <version>0.5.1-SNAPSHOT</version>
+        <version>0.5.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
