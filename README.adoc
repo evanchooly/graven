@@ -11,3 +11,18 @@ build to gradle so that you can trigger a gradle build of your plugin from the c
 This plugin will also help synchronize dependency versions defined in your maven build with those needed by gradle to build your plugin.
 And once all that's done, your gradle plugin artifact will be attached to your maven build as if nothing sneaky happened.  With a bit of
 luck, you'll hardly know you're running gradle at all!
+
+== Usage
+
+To run graven, you need to add the plugin to your `pom.xml`:
+
+```xml
+<plugins>
+    <plugin>
+        <groupId>com.antwerkz.graven</groupId>
+        <artifactId>graven-maven-plugin</artifactId>
+        <version>${graven.version}</version>
+        <extensions>true</extensions>
+    </plugin>
+</plugins>
+```
