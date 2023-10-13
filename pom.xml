@@ -27,7 +27,7 @@
     </scm>
 
     <properties>
-        <jackson.version>2.15.2</jackson.version>
+        <jackson.version>2.15.3</jackson.version>
         <maven.version>4.0.0-alpha-7</maven.version>
 
         <kotlin.code.style>official</kotlin.code.style>
