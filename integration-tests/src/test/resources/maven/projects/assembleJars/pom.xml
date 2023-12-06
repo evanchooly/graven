@@ -10,7 +10,8 @@
 
     <properties>
         <kotlin.version>1.8.10</kotlin.version>
-        <morphia.version>2.3.5</morphia.version>
+        <morphia.version>3.0.0-SNAPSHOT</morphia.version>
+        <testcontainers.version>1.19.3</testcontainers.version>
         <testng.version>7.8.0</testng.version>
         <maven.model>3.9.1</maven.model>
 

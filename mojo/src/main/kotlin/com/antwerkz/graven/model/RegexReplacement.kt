@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonRootName
 class RegexReplacement() {
     lateinit var pattern: String
     lateinit var value: String
-    private val regex by lazy { Regex(pattern) }
+    val regex by lazy { Regex(pattern) }
 
     constructor(pattern: String, value: String) : this() {
         this.pattern = pattern

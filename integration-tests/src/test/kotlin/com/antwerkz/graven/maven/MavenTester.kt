@@ -107,12 +107,8 @@ open class MavenTester {
         request.properties["graven.artifactId"] = gravenArtifactid
         request.properties["graven.version"] = gravenVersion
         getProperty("gradle.version")?.let { request.properties["gradle.version"] = it }
-
-        assertEquals(
-            initInvoker(testDir, debug).execute(request).exitCode,
-            0,
-            "Maven returned a non-zero exit code"
-        )
+        val execute = initInvoker(testDir, debug).execute(request)
+        assertEquals(execute.exitCode, 0, "Maven returned a non-zero exit code")
     }
 
     protected fun loadValue(testDir: File, fileName: String, propertyName: String): String {

@@ -1,5 +1,6 @@
 package com.antwerkz.graven
 
+import com.antwerkz.graven.model.RegexReplacement
 import com.antwerkz.graven.model.TargetPlugin
 import java.io.File
 import java.nio.file.Files
@@ -8,6 +9,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 import org.apache.maven.AbstractMavenLifecycleParticipant
 import org.apache.maven.execution.MavenSession
+import org.apache.maven.model.Dependency
 import org.apache.maven.model.Model
 import org.apache.maven.model.Plugin
 import org.apache.maven.model.PluginExecution
@@ -16,6 +18,7 @@ import org.codehaus.plexus.component.annotations.Component
 import org.codehaus.plexus.logging.LogEnabled
 import org.codehaus.plexus.logging.Logger
 import org.codehaus.plexus.util.xml.Xpp3Dom
+import org.zeroturnaround.exec.ProcessExecutor
 
 @Singleton
 @Component(
@@ -32,16 +35,30 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
                 TargetPlugin(
                     "org.apache.maven.plugins",
                     "maven-compiler-plugin",
+                    "classes",
+                    "compile",
+                    "default-compile"
+                ),
+                TargetPlugin(
+                    "org.jetbrains.kotlin",
+                    "kotlin-maven-plugin",
+                    "classes",
+                    "compile",
+                    "compile"
+                ),
+                TargetPlugin(
+                    "org.apache.maven.plugins",
+                    "maven-compiler-plugin",
                     "testClasses",
                     "test-compile",
                     "default-testCompile"
                 ),
                 TargetPlugin(
-                    "org.apache.maven.plugins",
-                    "maven-compiler-plugin",
-                    "classes",
-                    "compile",
-                    "default-compile"
+                    "org.jetbrains.kotlin",
+                    "kotlin-maven-plugin",
+                    "testClasses",
+                    "test-compile",
+                    "test-compile"
                 ),
                 TargetPlugin(
                     "org.apache.maven.plugins",
@@ -64,27 +81,62 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
             val wrapper = File(project.basedir, "gradle/wrapper/gradle-wrapper.properties")
             if (wrapper.exists()) {
                 val model = project.model
-                updateClean(model)
-                textReplacements(model)
-                applyDefaultPluginReplacements(project)
+                model.updateFiles(project)
+                model.updateClean()
+                project.applyDefaultPluginReplacements()
                 attachJars(project, model)
+                //                project.attachDependencies()
             }
         }
     }
 
-    override fun afterSessionEnd(session: MavenSession) {
-        session.projects.forEach { project ->
-            val logDir = File(project.basedir, "build/graven")
-            if (logDir.exists()) {
-                logDir
-                    .listFiles { file -> file.name.endsWith("-error.log") }
-                    .filter { Files.size(it.toPath()) == 0L }
-                    .forEach {
-                        logger?.debug("${it.absolutePath} is empty. Removing.")
-                        it.delete()
-                    }
+    private fun Model.updateFiles(project: MavenProject) {
+        val mojo = ReplacementMojo()
+        mojo.project = project
+        findGravenPlugin()?.let { graven ->
+            graven.configuration?.let {
+                var dom: Xpp3Dom = it as Xpp3Dom
+                dom.getChild("replacements")?.let { node ->
+                    mojo.replacements =
+                        node.getChildren("replacement").map {
+                            RegexReplacement(
+                                it.getChild("pattern").value,
+                                it.getChild("value").value
+                            )
+                        }
+                }
+                dom.getChild("gradleVersion")?.let { mojo.gradleVersion = it.value }
             }
+            logger?.let { mojo.logger = it }
+            mojo.execute()
         }
+    }
+
+    private fun MavenProject.attachDependencies() {
+        var command = GradleInvocationMojo.baseCommand
+        command += listOf("-q", "dependencies", "--configuration", "runtimeClasspath")
+        val executor = ProcessExecutor().command(command).directory(basedir).readOutput(true)
+        val output = executor.execute().outputString()
+
+        var topLevels =
+            output
+                .lines()
+                .filter { it.startsWith("+") || it.startsWith("\\") }
+                .map { it.substring(5) }
+
+        val deps = mutableListOf<Dependency>()
+        deps +=
+            model.dependencies +
+                topLevels.map { dep ->
+                    Dependency().also {
+                        val pieces = dep.split(":")
+                        it.groupId = pieces[0]
+                        it.artifactId = pieces[1]
+                        it.version = pieces[2]
+                        it.scope = "compile"
+                    }
+                }
+        model.dependencies = deps
     }
 
     private fun attachJars(project: MavenProject, model: Model) {
@@ -144,9 +196,8 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
         return name
     }
 
-    private fun updateClean(model: Model) {
-        model
-            .findOrInjectPlugin("org.apache.maven.plugins", "maven-clean-plugin")
+    private fun Model.updateClean() {
+        findOrInjectPlugin("org.apache.maven.plugins", "maven-clean-plugin")
             .executions
             .add(
                 PluginExecution().also {
@@ -160,33 +211,12 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
             )
     }
 
-    private fun textReplacements(model: Model) {
-        findGravenPlugin(model)?.let { plugin ->
-            plugin.executions.add(
-                PluginExecution().also {
-                    it.id = "default-graven-replacements"
-                    it.goals = listOf("sync")
-                    it.phase = "process-sources"
-                    it.configuration = plugin.configuration
-                }
-            )
-        }
-    }
-
-    private fun applyDefaultPluginReplacements(project: MavenProject) {
-        findGravenPlugin(project.model)?.let { plugin ->
+    private fun MavenProject.applyDefaultPluginReplacements() {
+        model.findGravenPlugin()?.let { plugin ->
             defaults.forEach { targetPlugin ->
-                val target =
-                    project.model.findOrInjectPlugin(targetPlugin.groupId, targetPlugin.artifactId)
-                val execution =
-                    target.executions.firstOrNull { it.id == targetPlugin.executionId }
-                        ?: PluginExecution().also {
-                            it.id = targetPlugin.executionId
-                            target.executions.add(it)
-                        }
-                execution.phase = "none"
+                model.disableDefaultPlugin(targetPlugin)
 
-                project.addLifecyclePhase(targetPlugin.phase)
+                addLifecyclePhase(targetPlugin.phase)
 
                 plugin.executions.add(
                     PluginExecution().also {
@@ -201,8 +231,19 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
         }
     }
 
-    private fun findGravenPlugin(model: Model) =
-        model.build.plugins.firstOrNull { plugin ->
+    private fun Model.disableDefaultPlugin(targetPlugin: TargetPlugin) {
+        val target = findOrInjectPlugin(targetPlugin.groupId, targetPlugin.artifactId)
+        val execution =
+            target.executions.firstOrNull { it.id == targetPlugin.executionId }
+                ?: PluginExecution().also {
+                    it.id = targetPlugin.executionId
+                    target.executions.add(it)
+                }
+        execution.phase = "none"
+    }
+
+    private fun Model.findGravenPlugin() =
+        build.plugins.firstOrNull { plugin ->
             (GROUPID == plugin.groupId) && (ARTIFACTID == plugin.artifactId)
         }
 
@@ -224,6 +265,21 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
         return plugin
     }
 
+    override fun afterSessionEnd(session: MavenSession) {
+        session.projects.forEach { project ->
+            val logDir = File(project.basedir, "build/graven")
+            if (logDir.exists()) {
+                logDir
+                    .listFiles { file -> file.name.endsWith("-error.log") }
+                    ?.filter { Files.size(it.toPath()) == 0L }
+                    ?.forEach {
+                        logger?.debug("${it.absolutePath} is empty. Removing.")
+                        it.delete()
+                    }
+            }
+        }
+    }
+
     private fun dom(name: String, vararg children: Xpp3Dom): Xpp3Dom {
         val dom = Xpp3Dom(name)
         children.forEach { dom.addChild(it) }
@@ -235,14 +291,5 @@ class GravenLifecycleParticipant : AbstractMavenLifecycleParticipant(), LogEnabl
         val dom = Xpp3Dom(name)
         dom.value = value
         return dom
-    }
-
-    private fun showExecutions(plugin: Plugin) {
-        println("**************** plugin.artifactId = ${plugin.artifactId}")
-        plugin.executions.forEachIndexed { index, pluginExecution ->
-            println("**************** execution $index: id =    ${pluginExecution.id}")
-            println("**************** execution $index: phase = ${pluginExecution.phase}")
-            println("**************** execution $index: goals = ${pluginExecution.goals}")
-        }
     }
 }

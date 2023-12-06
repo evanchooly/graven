@@ -17,7 +17,7 @@ import org.zeroturnaround.exec.ProcessExecutor
 class GradleInvocationMojo : AbstractMojo() {
     companion object {
         const val MOJO_NAME = "gradle"
-        private val baseCommand =
+        val baseCommand =
             listOf(
                 "java",
                 "-Xmx64m",
@@ -26,6 +26,7 @@ class GradleInvocationMojo : AbstractMojo() {
                 "-cp",
                 "gradle/wrapper/gradle-wrapper.jar",
                 "org.gradle.wrapper.GradleWrapperMain",
+                "--stacktrace",
                 "--console",
                 "plain"
             )
